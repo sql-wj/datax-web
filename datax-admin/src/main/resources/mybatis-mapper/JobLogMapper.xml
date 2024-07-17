@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wugui.datax.admin.mapper.JobLogMapper">
+<mapper namespace="com.sql.datax.admin.mapper.JobLogMapper">
 	
-	<resultMap id="JobLog" type="com.wugui.datax.admin.entity.JobLog" >
+	<resultMap id="JobLog" type="com.sql.datax.admin.entity.JobLog" >
 		<result column="id" property="id" />
 
 		<result column="job_group" property="jobGroup" />
@@ -127,7 +127,7 @@
 	</select>
 
 	
-	<insert id="save" parameterType="com.wugui.datax.admin.entity.JobLog" useGeneratedKeys="true" keyProperty="id" >
+	<insert id="save" parameterType="com.sql.datax.admin.entity.JobLog" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO job_log (
 			`job_group`,
 			`job_id`,

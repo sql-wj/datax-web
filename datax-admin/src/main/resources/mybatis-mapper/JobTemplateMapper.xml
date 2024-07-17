@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wugui.datax.admin.mapper.JobTemplateMapper">
+<mapper namespace="com.sql.datax.admin.mapper.JobTemplateMapper">
 
-	<resultMap id="JobTemplate" type="com.wugui.datax.admin.entity.JobTemplate" >
+	<resultMap id="JobTemplate" type="com.sql.datax.admin.entity.JobTemplate" >
 		<result column="id" property="id" />
 
 		<result column="job_group" property="jobGroup" />
@@ -124,7 +124,7 @@
 		</trim>
 	</select>
 
-	<insert id="save" parameterType="com.wugui.datax.admin.entity.JobTemplate" useGeneratedKeys="true" keyProperty="id" >
+	<insert id="save" parameterType="com.sql.datax.admin.entity.JobTemplate" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO job_template (
 			job_group,
 			job_cron,
@@ -186,7 +186,7 @@
 		WHERE t.id = #{id}
 	</select>
 
-	<update id="update" parameterType="com.wugui.datax.admin.entity.JobTemplate" >
+	<update id="update" parameterType="com.sql.datax.admin.entity.JobTemplate" >
 		UPDATE job_template
 		SET
 			job_group = #{jobGroup},

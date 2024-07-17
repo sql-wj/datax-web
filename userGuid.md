@@ -199,7 +199,7 @@
 # 配置mybatis-plus打印sql日志
 logging:
   level:
-    com.wugui.datax.admin.mapper: error
+    com.sql.datax.admin.mapper: error
   path: ./data/applogs/admin
 ```
 
