@@ -15,8 +15,7 @@ import java.net.UnknownHostException;
 @EnableSwagger2
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class DataXAdminApplication {
-
-    private static Logger logger = LoggerFactory.getLogger(DataXAdminApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataXAdminApplication.class);
 
     public static void main(String[] args) throws UnknownHostException {
         Environment env = new SpringApplication(DataXAdminApplication.class).run(args).getEnvironment();
@@ -24,7 +23,7 @@ public class DataXAdminApplication {
         String envContext = env.getProperty("server.contextPath");
         String port = envPort == null ? "8080" : envPort;
         String context = envContext == null ? "" : envContext;
-        String path = port + "" + context + "/doc.html";
+        String path = port + context + "/doc.html";
         String externalAPI = InetAddress.getLocalHost().getHostAddress();
         logger.info(
                 "Access URLs:\n----------------------------------------------------------\n\t"
