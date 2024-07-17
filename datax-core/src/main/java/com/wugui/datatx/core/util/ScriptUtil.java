@@ -9,7 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,38 +26,18 @@ public class ScriptUtil {
 
     /**
      * make script file
-     *
-     * @param scriptFileName
-     * @param content
-     * @throws IOException
      */
     public static void markScriptFile(String scriptFileName, String content) throws IOException {
         // make file,   filePath/gluesource/666-123456789.py
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(scriptFileName);
-            fileOutputStream.write(content.getBytes("UTF-8"));
-            fileOutputStream.close();
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            if (fileOutputStream != null) {
-                fileOutputStream.close();
-            }
+        try (FileOutputStream fileOutputStream = new FileOutputStream(scriptFileName)) {
+            fileOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
         }
     }
 
     /**
      * 脚本执行，日志文件实时输出
-     *
-     * @param command
-     * @param scriptFile
-     * @param logFile
-     * @param params
-     * @return
      */
-    public static int execToFile(String command, String scriptFile, String logFile,long logId,long logDateTime, String... params) {
-
+    public static int execToFile(String command, String scriptFile, String logFile, long logId, long logDateTime, String... params) {
         FileOutputStream fileOutputStream = null;
         Thread inputThread = null;
         Thread errThread = null;
@@ -67,10 +49,8 @@ public class ScriptUtil {
             List<String> cmdarray = new ArrayList<>();
             cmdarray.add(command);
             cmdarray.add(scriptFile);
-            if (params != null && params.length > 0) {
-                for (String param : params) {
-                    cmdarray.add(param);
-                }
+            if (params != null) {
+                cmdarray.addAll(Arrays.asList(params));
             }
             String[] cmdarrayFinal = cmdarray.toArray(new String[cmdarray.size()]);
 
@@ -132,12 +112,6 @@ public class ScriptUtil {
 
     /**
      * 数据流Copy（Input自动关闭，Output不处理）
-     *
-     * @param inputStream
-     * @param outputStream
-     * @param buffer
-     * @return
-     * @throws IOException
      */
     private static long copy(InputStream inputStream, OutputStream outputStream, byte[] buffer) throws IOException {
         try {
@@ -154,7 +128,9 @@ public class ScriptUtil {
                     }
                 }
             }
-            outputStream.flush();
+            if (outputStream != null) {
+                outputStream.flush();
+            }
             //out = null;
             inputStream.close();
             inputStream = null;

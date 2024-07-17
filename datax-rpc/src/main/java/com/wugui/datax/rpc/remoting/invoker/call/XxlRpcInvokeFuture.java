@@ -13,9 +13,7 @@ import java.util.concurrent.TimeoutException;
  * @author xuxueli 2018-10-22 18:31:42
  */
 public class XxlRpcInvokeFuture implements Future {
-
-
-    private XxlRpcFutureResponse futureResponse;
+    private final XxlRpcFutureResponse futureResponse;
 
     public XxlRpcInvokeFuture(XxlRpcFutureResponse futureResponse) {
         this.futureResponse = futureResponse;
@@ -25,7 +23,6 @@ public class XxlRpcInvokeFuture implements Future {
         // remove-InvokerFuture
         futureResponse.removeInvokerFuture();
     }
-
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
@@ -65,17 +62,11 @@ public class XxlRpcInvokeFuture implements Future {
         }
     }
 
-
     // ---------------------- thread invoke future ----------------------
-
-    private static ThreadLocal<XxlRpcInvokeFuture> threadInvokerFuture = new ThreadLocal<XxlRpcInvokeFuture>();
+    private static final ThreadLocal<XxlRpcInvokeFuture> threadInvokerFuture = new ThreadLocal<>();
 
     /**
      * get future
-     *
-     * @param type
-     * @param <T>
-     * @return
      */
     public static <T> Future<T> getFuture(Class<T> type) {
         Future<T> future = (Future<T>) threadInvokerFuture.get();
@@ -85,8 +76,6 @@ public class XxlRpcInvokeFuture implements Future {
 
     /**
      * set future
-     *
-     * @param future
      */
     public static void setFuture(XxlRpcInvokeFuture future) {
         threadInvokerFuture.set(future);

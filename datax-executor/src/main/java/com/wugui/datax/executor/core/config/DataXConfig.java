@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class DataXConfig {
-    private Logger logger = LoggerFactory.getLogger(DataXConfig.class);
+    private final Logger logger = LoggerFactory.getLogger(DataXConfig.class);
 
     private static final String DEFAULT_LOG_PATH = "log/executor/jobhandler";
 
@@ -40,7 +40,6 @@ public class DataXConfig {
 
     @Value("${datax.job.executor.logretentiondays}")
     private int logRetentionDays;
-
 
     @Bean
     public JobSpringExecutor JobExecutor() {
@@ -77,6 +76,5 @@ public class DataXConfig {
      *      3、获取IP
      *          String ip_ = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
      */
-
 
 }

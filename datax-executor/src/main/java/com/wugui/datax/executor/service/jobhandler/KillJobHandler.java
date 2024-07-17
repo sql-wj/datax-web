@@ -1,6 +1,5 @@
 package com.wugui.datax.executor.service.jobhandler;
 
-
 import cn.hutool.core.io.FileUtil;
 import com.wugui.datatx.core.biz.model.ReturnT;
 import com.wugui.datatx.core.biz.model.TriggerParam;
@@ -17,7 +16,6 @@ import java.io.File;
  *
  * @author jingwk 2019-12-16
  */
-
 @JobHandler(value = "killJobHandler")
 @Component
 public class KillJobHandler extends IJobHandler {

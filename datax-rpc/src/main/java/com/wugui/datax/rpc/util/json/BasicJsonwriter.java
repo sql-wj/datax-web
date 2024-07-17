@@ -11,8 +11,7 @@ import java.util.*;
  * @author xuxueli 2018-11-30
  */
 public class BasicJsonwriter {
-    private static Logger logger = LoggerFactory.getLogger(BasicJsonwriter.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(BasicJsonwriter.class);
 
     private static final String STR_SLASH = "\"";
     private static final String STR_SLASH_STR = "\":";
@@ -26,9 +25,6 @@ public class BasicJsonwriter {
 
     /**
      * write object to json
-     *
-     * @param object
-     * @return
      */
     public String toJson(Object object) {
         StringBuilder json = new StringBuilder();
@@ -54,20 +50,8 @@ public class BasicJsonwriter {
 
     /**
      * append Obj
-     *
-     * @param key
-     * @param value
-     * @param json  "key":value or value
      */
     private void writeObjItem(String key, Object value, StringBuilder json) {
-
-        /*if ("serialVersionUID".equals(key)
-                || value instanceof Logger) {
-            // pass
-
-            return;
-        }*/
-
         // "key:"
         if (key != null) {
             json.append(STR_SLASH).append(key).append(STR_SLASH_STR);
@@ -80,8 +64,7 @@ public class BasicJsonwriter {
                 || value instanceof Byte
                 || value instanceof CharSequence) {
             // string
-
-            json.append(STR_SLASH).append(value.toString()).append(STR_SLASH);
+            json.append(STR_SLASH).append(value).append(STR_SLASH);
         } else if (value instanceof Boolean
                 || value instanceof Short
                 || value instanceof Integer
@@ -90,11 +73,9 @@ public class BasicJsonwriter {
                 || value instanceof Double
         ) {
             // number
-
             json.append(value);
         } else if (value instanceof Object[] || value instanceof Collection) {
             // collection | array     //  Array.getLength(array);   // Array.get(array, i);
-
             Collection valueColl = null;
             if (value instanceof Object[]) {
                 Object[] valueArr = (Object[]) value;
@@ -104,7 +85,7 @@ public class BasicJsonwriter {
             }
 
             json.append(STR_ARRAY_LEFT);
-            if (valueColl.size() > 0) {
+            if (!valueColl.isEmpty()) {
                 for (Object obj : valueColl) {
                     writeObjItem(null, obj, json);
                     json.append(STR_COMMA);
@@ -115,7 +96,6 @@ public class BasicJsonwriter {
 
         } else if (value instanceof Map) {
             // map
-
             Map<?, ?> valueMap = (Map<?, ?>) value;
 
             json.append(STR_OBJECT_LEFT);
@@ -126,13 +106,10 @@ public class BasicJsonwriter {
                     json.append(STR_COMMA);
                 }
                 json.delete(json.length() - 1, json.length());
-
             }
             json.append(STR_OBJECT_RIGHT);
-
         } else {
             // bean
-
             json.append(STR_OBJECT_LEFT);
             Field[] fields = getDeclaredFields(value.getClass());
             if (fields.length > 0) {
@@ -143,7 +120,6 @@ public class BasicJsonwriter {
                 }
                 json.delete(json.length() - 1, json.length());
             }
-
             json.append(STR_OBJECT_RIGHT);
         }
     }
@@ -159,22 +135,19 @@ public class BasicJsonwriter {
     }
 
     private Field[] getAllDeclaredFields(Class<?> clazz) {
-        List<Field> list = new ArrayList<Field>();
+        List<Field> list = new ArrayList<>();
         Class<?> current = clazz;
 
         while (current != null && current != Object.class) {
             Field[] fields = current.getDeclaredFields();
-
             for (Field field : fields) {
                 if (Modifier.isStatic(field.getModifiers())) {
                     continue;
                 }
                 list.add(field);
             }
-
             current = current.getSuperclass();
         }
-
         return list.toArray(new Field[list.size()]);
     }
 
@@ -189,6 +162,5 @@ public class BasicJsonwriter {
             field.setAccessible(false);
         }
     }
-
 
 }

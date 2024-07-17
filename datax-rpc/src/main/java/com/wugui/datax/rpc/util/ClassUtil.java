@@ -6,7 +6,6 @@ import java.util.HashMap;
  * @author xuxueli 2019-02-19
  */
 public class ClassUtil {
-
     private static final HashMap<String, Class<?>> primClasses = new HashMap<>();
 
     static {

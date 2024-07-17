@@ -23,7 +23,6 @@ public class IpUtil {
     private static final String LOCALHOST_VALUE = "127.0.0.1";
     private static final Pattern IP_PATTERN = Pattern.compile("\\d{1,3}(\\.\\d{1,3}){3,5}$");
 
-
     private static volatile InetAddress LOCAL_ADDRESS = null;
 
     // ---------------------- valid ----------------------
@@ -47,9 +46,6 @@ public class IpUtil {
 
     /**
      * valid Inet4Address
-     *
-     * @param address
-     * @return
      */
     private static boolean isValidV4Address(InetAddress address) {
         if (address == null || address.isLoopbackAddress()) {
@@ -92,7 +88,6 @@ public class IpUtil {
     }
 
     // ---------------------- find ip ----------------------
-
 
     private static InetAddress getLocalAddress0() {
         InetAddress localAddress = null;
@@ -144,7 +139,6 @@ public class IpUtil {
         return localAddress;
     }
 
-
     // ---------------------- tool ----------------------
 
     /**
@@ -172,9 +166,6 @@ public class IpUtil {
 
     /**
      * get ip:port
-     *
-     * @param port
-     * @return String
      */
     public static String getIpPort(int port) {
         String ip = getIp();
@@ -196,6 +187,5 @@ public class IpUtil {
 
         return new Object[]{host, port};
     }
-
 
 }

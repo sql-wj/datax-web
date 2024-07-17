@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -22,9 +23,9 @@ import java.util.concurrent.TimeUnit;
  * Created by xuxueli on 16/7/22.
  */
 public class TriggerCallbackThread {
-    private static Logger logger = LoggerFactory.getLogger(TriggerCallbackThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(TriggerCallbackThread.class);
 
-    private static TriggerCallbackThread instance = new TriggerCallbackThread();
+    private static final TriggerCallbackThread instance = new TriggerCallbackThread();
 
     public static TriggerCallbackThread getInstance() {
         return instance;
@@ -33,7 +34,7 @@ public class TriggerCallbackThread {
     /**
      * job results callback queue
      */
-    private LinkedBlockingQueue<HandleCallbackParam> callBackQueue = new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<HandleCallbackParam> callBackQueue = new LinkedBlockingQueue<>();
 
     public static void pushCallBack(HandleCallbackParam callback) {
         getInstance().callBackQueue.add(callback);
@@ -48,7 +49,6 @@ public class TriggerCallbackThread {
     private volatile boolean toStop = false;
 
     public void start() {
-
         // valid
         if (JobExecutor.getAdminBizList() == null) {
             logger.warn(">>>>>>>>>>> datax-web, executor callback config fail, adminAddresses is null.");
@@ -57,21 +57,18 @@ public class TriggerCallbackThread {
 
         // callback
         triggerCallbackThread = new Thread(() -> {
-
             // normal callback
             while (!toStop) {
                 try {
                     HandleCallbackParam callback = getInstance().callBackQueue.take();
 
                     // callback list param
-                    List<HandleCallbackParam> callbackParamList = new ArrayList<HandleCallbackParam>();
-                    int drainToNum = getInstance().callBackQueue.drainTo(callbackParamList);
+                    List<HandleCallbackParam> callbackParamList = new ArrayList<>();
+                    getInstance().callBackQueue.drainTo(callbackParamList);
                     callbackParamList.add(callback);
 
                     // callback, will retry if error
-                    if (callbackParamList.size() > 0) {
-                        doCallback(callbackParamList);
-                    }
+                    doCallback(callbackParamList);
                 } catch (Exception e) {
                     if (!toStop) {
                         logger.error(e.getMessage(), e);
@@ -81,9 +78,9 @@ public class TriggerCallbackThread {
 
             // last callback
             try {
-                List<HandleCallbackParam> callbackParamList = new ArrayList<HandleCallbackParam>();
-                int drainToNum = getInstance().callBackQueue.drainTo(callbackParamList);
-                if (callbackParamList != null && callbackParamList.size() > 0) {
+                List<HandleCallbackParam> callbackParamList = new ArrayList<>();
+                getInstance().callBackQueue.drainTo(callbackParamList);
+                if (!callbackParamList.isEmpty()) {
                     doCallback(callbackParamList);
                 }
             } catch (Exception e) {
@@ -92,12 +89,10 @@ public class TriggerCallbackThread {
                 }
             }
             logger.info(">>>>>>>>>>> datax-web, executor callback thread destory.");
-
         });
         triggerCallbackThread.setDaemon(true);
         triggerCallbackThread.setName("datax-web, executor TriggerCallbackThread");
         triggerCallbackThread.start();
-
 
         // retry
         triggerRetryCallbackThread = new Thread(() -> {
@@ -108,7 +103,6 @@ public class TriggerCallbackThread {
                     if (!toStop) {
                         logger.error(e.getMessage(), e);
                     }
-
                 }
                 try {
                     TimeUnit.SECONDS.sleep(RegistryConfig.BEAT_TIMEOUT);
@@ -122,7 +116,6 @@ public class TriggerCallbackThread {
         });
         triggerRetryCallbackThread.setDaemon(true);
         triggerRetryCallbackThread.start();
-
     }
 
     public void toStop() {
@@ -151,8 +144,6 @@ public class TriggerCallbackThread {
 
     /**
      * do callback, will retry if error
-     *
-     * @param callbackParamList
      */
     private void doCallback(List<HandleCallbackParam> callbackParamList) {
         boolean callbackRet = false;
@@ -187,15 +178,14 @@ public class TriggerCallbackThread {
         }
     }
 
-
     // ---------------------- fail-callback file ----------------------
 
-    private static String failCallbackFilePath = JobFileAppender.getLogPath().concat(File.separator).concat("callbacklog").concat(File.separator);
-    private static String failCallbackFileName = failCallbackFilePath.concat("datax-web-callback-{x}").concat(".log");
+    private static final String failCallbackFilePath = JobFileAppender.getLogPath().concat(File.separator).concat("callbacklog").concat(File.separator);
+    private static final String failCallbackFileName = failCallbackFilePath.concat("datax-web-callback-{x}").concat(".log");
 
     private void appendFailCallbackFile(List<HandleCallbackParam> callbackParamList) {
         // valid
-        if (callbackParamList == null || callbackParamList.size() == 0) {
+        if (callbackParamList == null || callbackParamList.isEmpty()) {
             return;
         }
 
@@ -224,13 +214,13 @@ public class TriggerCallbackThread {
         if (callbackLogPath.isFile()) {
             callbackLogPath.delete();
         }
-        if (!(callbackLogPath.isDirectory() && callbackLogPath.list() != null && callbackLogPath.list().length > 0)) {
+        if (!(callbackLogPath.isDirectory() && callbackLogPath.list() != null && Objects.requireNonNull(callbackLogPath.list()).length > 0)) {
             return;
         }
 
         // load and clear file, retry
         List<HandleCallbackParam> params;
-        for (File f : callbackLogPath.listFiles()) {
+        for (File f : Objects.requireNonNull(callbackLogPath.listFiles())) {
             byte[] ps = FileUtil.readFileContent(f);
             params = (List<HandleCallbackParam>) JobExecutor.getSerializer().deserialize(ps, HandleCallbackParam.class);
             f.delete();

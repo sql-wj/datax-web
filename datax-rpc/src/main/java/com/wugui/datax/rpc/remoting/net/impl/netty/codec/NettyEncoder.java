@@ -12,8 +12,8 @@ import io.netty.handler.codec.MessageToByteEncoder;
  */
 public class NettyEncoder extends MessageToByteEncoder<Object> {
 
-    private Class<?> genericClass;
-    private Serializer serializer;
+    private final Class<?> genericClass;
+    private final Serializer serializer;
 
     public NettyEncoder(Class<?> genericClass, final Serializer serializer) {
         this.genericClass = genericClass;

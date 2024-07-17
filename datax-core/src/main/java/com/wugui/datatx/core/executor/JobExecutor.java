@@ -64,7 +64,6 @@ public class JobExecutor {
         this.logRetentionDays = logRetentionDays;
     }
 
-
     // ---------------------- start + stop ----------------------
     public void start() throws Exception {
 
@@ -73,7 +72,6 @@ public class JobExecutor {
 
         // init invoker, admin-client
         initAdminBizList(adminAddresses, accessToken);
-
 
         // init JobLogFileCleanThread
         JobLogFileCleanThread.getInstance().start(logRetentionDays);
@@ -86,17 +84,16 @@ public class JobExecutor {
 
         // init executor-server
         port = port > 0 ? port : NetUtil.findAvailablePort(9999);
-        ip = (ip != null && ip.trim().length() > 0) ? ip : IpUtil.getIp();
+        ip = (ip != null && !ip.trim().isEmpty()) ? ip : IpUtil.getIp();
         initRpcProvider(ip, port, appName, accessToken);
     }
 
     public void destroy() {
-
         // destory executor-server
         stopRpcProvider();
 
         // destory jobThreadRepository
-        if (jobThreadRepository.size() > 0) {
+        if (!jobThreadRepository.isEmpty()) {
             for (Map.Entry<Integer, JobThread> item : jobThreadRepository.entrySet()) {
                 removeJobThread(item.getKey(), "web container destroy and kill the job.");
                 JobThread oldJobThread = removeJobThread(item.getKey(), "web container destroy and kill the job.");
@@ -121,18 +118,17 @@ public class JobExecutor {
 
         // destory ProcessCallbackThread
         ProcessCallbackThread.getInstance().toStop();
-
     }
 
 
     // ---------------------- admin-client (rpc invoker) ----------------------
     private static List<AdminBiz> adminBizList;
-    private static Serializer serializer = new HessianSerializer();
+    private static final Serializer serializer = new HessianSerializer();
 
-    private void initAdminBizList(String adminAddresses, String accessToken) throws Exception {
-        if (adminAddresses != null && adminAddresses.trim().length() > 0) {
+    private void initAdminBizList(String adminAddresses, String accessToken) {
+        if (adminAddresses != null && !adminAddresses.trim().isEmpty()) {
             for (String address : adminAddresses.trim().split(",")) {
-                if (address != null && address.trim().length() > 0) {
+                if (address != null && !address.trim().isEmpty()) {
                     //实例化AdminBizClient
                     AdminBiz adminBiz = new AdminBizClient(address.trim(), accessToken);
 
@@ -158,7 +154,6 @@ public class JobExecutor {
     private XxlRpcProviderFactory xxlRpcProviderFactory = null;
 
     private void initRpcProvider(String ip, int port, String appName, String accessToken) throws Exception {
-
         // init, provider factory
         String address = IpUtil.getIpPort(ip, port);
         Map<String, String> serviceRegistryParam = new HashMap<>();
@@ -182,7 +177,6 @@ public class JobExecutor {
 
         // start
         xxlRpcProviderFactory.start();
-
     }
 
     public static class ExecutorServiceRegistry extends ServiceRegistry {
@@ -232,7 +226,7 @@ public class JobExecutor {
 
 
     // ---------------------- job handler repository ----------------------
-    private static ConcurrentMap<String, IJobHandler> jobHandlerRepository = new ConcurrentHashMap<String, IJobHandler>();
+    private static final ConcurrentMap<String, IJobHandler> jobHandlerRepository = new ConcurrentHashMap<>();
 
     public static IJobHandler registJobHandler(String name, IJobHandler jobHandler) {
         logger.info(">>>>>>>>>>> datax-web register jobhandler success, name:{}, jobHandler:{}", name, jobHandler);
@@ -245,12 +239,12 @@ public class JobExecutor {
 
 
     // ---------------------- job thread repository ----------------------
-    private static ConcurrentMap<Integer, JobThread> jobThreadRepository = new ConcurrentHashMap<Integer, JobThread>();
+    private static final ConcurrentMap<Integer, JobThread> jobThreadRepository = new ConcurrentHashMap<>();
 
     public static JobThread registJobThread(int jobId, IJobHandler handler, String removeOldReason) {
         JobThread newJobThread = new JobThread(jobId, handler);
         newJobThread.start();
-        logger.info(">>>>>>>>>>> datax-web regist JobThread success, jobId:{}, handler:{}", new Object[]{jobId, handler});
+        logger.info(">>>>>>>>>>> datax-web regist JobThread success, jobId:{}, handler:{}", jobId, handler);
 
         JobThread oldJobThread = jobThreadRepository.put(jobId, newJobThread);    // putIfAbsent | oh my god, map's put method return the old value!!!
         if (oldJobThread != null) {
@@ -272,8 +266,7 @@ public class JobExecutor {
     }
 
     public static JobThread loadJobThread(int jobId) {
-        JobThread jobThread = jobThreadRepository.get(jobId);
-        return jobThread;
+        return jobThreadRepository.get(jobId);
     }
 
 }

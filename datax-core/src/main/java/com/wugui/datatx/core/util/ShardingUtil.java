@@ -6,11 +6,9 @@ package com.wugui.datatx.core.util;
  * @author xuxueli 2017-07-25 21:26:38
  */
 public class ShardingUtil {
-
-    private static InheritableThreadLocal<ShardingVO> contextHolder = new InheritableThreadLocal<>();
+    private static final InheritableThreadLocal<ShardingVO> contextHolder = new InheritableThreadLocal<>();
 
     public static class ShardingVO {
-
         private int index;  // sharding index
         private int total;  // sharding total
 

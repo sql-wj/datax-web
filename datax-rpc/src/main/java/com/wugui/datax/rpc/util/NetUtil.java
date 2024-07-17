@@ -12,13 +12,10 @@ import java.net.ServerSocket;
  * @author xuxueli 2017-11-29 17:00:25
  */
 public class NetUtil {
-    private static Logger logger = LoggerFactory.getLogger(NetUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(NetUtil.class);
 
     /**
      * find avaliable port
-     *
-     * @param defaultPort
-     * @return
      */
     public static int findAvailablePort(int defaultPort) {
         int portTmp = defaultPort;
@@ -42,9 +39,6 @@ public class NetUtil {
 
     /**
      * check port used
-     *
-     * @param port
-     * @return
      */
     public static boolean isPortUsed(int port) {
         boolean used;
@@ -60,7 +54,7 @@ public class NetUtil {
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
-                    logger.info("");
+                    logger.info("", e);
                 }
             }
         }

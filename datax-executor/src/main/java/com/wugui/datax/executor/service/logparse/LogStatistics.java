@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class LogStatistics implements Serializable {
 
-
     /**
      * DataX任务启动时刻
      */

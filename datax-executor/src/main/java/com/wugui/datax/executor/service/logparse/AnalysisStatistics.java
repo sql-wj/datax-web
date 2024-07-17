@@ -20,16 +20,10 @@ import static com.wugui.datax.executor.service.jobhandler.DataXConstant.*;
 
 public class AnalysisStatistics {
 
-
-
     /**
      * Log of analysis statistics
-     *
-     * @param inputStream
-     * @throws IOException
      */
     public static LogStatistics analysisStatisticsLog(InputStream inputStream) throws IOException {
-
         LogStatistics logStatistics = new LogStatistics();
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));

@@ -20,17 +20,14 @@ import java.util.Map;
  */
 public class JobSpringExecutor extends JobExecutor implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean {
 
-
     // start
     @Override
     public void afterSingletonsInstantiated() {
-
         // init JobHandler Repository
         initJobHandlerRepository(applicationContext);
 
         // refresh GlueFactory
         GlueFactory.refreshInstance(1);
-
 
         // super start
         try {
@@ -45,7 +42,6 @@ public class JobSpringExecutor extends JobExecutor implements ApplicationContext
     public void destroy() {
         super.destroy();
     }
-
 
     private void initJobHandlerRepository(ApplicationContext applicationContext) {
         if (applicationContext == null) {

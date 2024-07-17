@@ -20,22 +20,20 @@ import java.util.concurrent.*;
  * @author xuxueli 2018-10-19
  */
 public class XxlRpcInvokerFactory {
-    private static Logger logger = LoggerFactory.getLogger(XxlRpcInvokerFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(XxlRpcInvokerFactory.class);
 
     // ---------------------- default instance ----------------------
 
-    private static volatile XxlRpcInvokerFactory instance = new XxlRpcInvokerFactory(LocalServiceRegistry.class, null);
+    private static final XxlRpcInvokerFactory instance = new XxlRpcInvokerFactory(LocalServiceRegistry.class, null);
 
     public static XxlRpcInvokerFactory getInstance() {
         return instance;
     }
 
-
     // ---------------------- config ----------------------
 
     private Class<? extends ServiceRegistry> serviceRegistryClass;          // class.forname
     private Map<String, String> serviceRegistryParam;
-
 
     public XxlRpcInvokerFactory() {
     }
@@ -44,7 +42,6 @@ public class XxlRpcInvokerFactory {
         this.serviceRegistryClass = serviceRegistryClass;
         this.serviceRegistryParam = serviceRegistryParam;
     }
-
 
     // ---------------------- start / stop ----------------------
 
@@ -63,7 +60,7 @@ public class XxlRpcInvokerFactory {
         }
 
         // stop callback
-        if (stopCallbackList.size() > 0) {
+        if (!stopCallbackList.isEmpty()) {
             for (BaseCallback callback : stopCallbackList) {
                 try {
                     callback.run();
@@ -77,7 +74,6 @@ public class XxlRpcInvokerFactory {
         stopCallbackThreadPool();
     }
 
-
     // ---------------------- service registry ----------------------
 
     private ServiceRegistry serviceRegistry;
@@ -86,21 +82,19 @@ public class XxlRpcInvokerFactory {
         return serviceRegistry;
     }
 
-
     // ---------------------- service registry ----------------------
 
-    private List<BaseCallback> stopCallbackList = new ArrayList<BaseCallback>();
+    private final List<BaseCallback> stopCallbackList = new ArrayList<>();
 
     public void addStopCallBack(BaseCallback callback) {
         stopCallbackList.add(callback);
     }
 
-
     // ---------------------- future-response pool ----------------------
 
     // XxlRpcFutureResponseFactory
 
-    private ConcurrentMap<String, XxlRpcFutureResponse> futureResponsePool = new ConcurrentHashMap<String, XxlRpcFutureResponse>();
+    private final ConcurrentMap<String, XxlRpcFutureResponse> futureResponsePool = new ConcurrentHashMap<>();
 
     public void setInvokerFuture(String requestId, XxlRpcFutureResponse futureResponse) {
         futureResponsePool.put(requestId, futureResponse);
@@ -111,7 +105,6 @@ public class XxlRpcInvokerFactory {
     }
 
     public void notifyInvokerFuture(String requestId, final XxlRpcResponse xxlRpcResponse) {
-
         // get
         final XxlRpcFutureResponse futureResponse = futureResponsePool.get(requestId);
         if (futureResponse == null) {
@@ -134,23 +127,19 @@ public class XxlRpcInvokerFactory {
                 logger.error(e.getMessage(), e);
             }
         } else {
-
             // other nomal type
             futureResponse.setResponse(xxlRpcResponse);
         }
 
         // do remove
         futureResponsePool.remove(requestId);
-
     }
-
 
     // ---------------------- response callback ThreadPool ----------------------
 
-    private ThreadPoolExecutor responseCallbackThreadPool = null;
+    private volatile ThreadPoolExecutor responseCallbackThreadPool = null;
 
     public void executeResponseCallback(Runnable runnable) {
-
         if (responseCallbackThreadPool == null) {
             synchronized (this) {
                 if (responseCallbackThreadPool == null) {

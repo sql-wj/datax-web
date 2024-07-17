@@ -18,6 +18,7 @@ public class AdminBizClient implements AdminBiz {
 
     public AdminBizClient() {
     }
+
     public AdminBizClient(String addressUrl, String accessToken) {
         this.addressUrl = addressUrl;
         this.accessToken = accessToken;
@@ -28,13 +29,13 @@ public class AdminBizClient implements AdminBiz {
         }
     }
 
-    private String addressUrl ;
+    private String addressUrl;
     private String accessToken;
 
 
     @Override
     public ReturnT<String> callback(List<HandleCallbackParam> callbackParamList) {
-        return JobRemotingUtil.postBody(addressUrl+"api/callback", accessToken, callbackParamList, 3);
+        return JobRemotingUtil.postBody(addressUrl + "api/callback", accessToken, callbackParamList, 3);
     }
 
     @Override

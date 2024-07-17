@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class NettyDecoder extends ByteToMessageDecoder {
 
-    private Class<?> genericClass;
-    private Serializer serializer;
+    private final Class<?> genericClass;
+    private final Serializer serializer;
 
     public NettyDecoder(Class<?> genericClass, final Serializer serializer) {
         this.genericClass = genericClass;
@@ -23,7 +23,7 @@ public class NettyDecoder extends ByteToMessageDecoder {
     }
 
     @Override
-    public final void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    public final void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         if (in.readableBytes() < 4) {
             return;
         }
@@ -34,7 +34,7 @@ public class NettyDecoder extends ByteToMessageDecoder {
         }
         if (in.readableBytes() < dataLength) {
             in.resetReaderIndex();
-            return;	// fix 1024k buffer splice limix
+            return;    // fix 1024k buffer splice limix
         }
         byte[] data = new byte[dataLength];
         in.readBytes(data);

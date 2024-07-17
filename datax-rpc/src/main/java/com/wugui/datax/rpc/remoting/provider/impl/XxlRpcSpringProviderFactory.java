@@ -16,16 +16,16 @@ import java.util.Map;
  *
  * @author xuxueli 2018-10-18 18:09:20
  */
-public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implements ApplicationContextAware, InitializingBean,DisposableBean {
+public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implements ApplicationContextAware, InitializingBean, DisposableBean {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
         Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(XxlRpcService.class);
-        if (serviceBeanMap!=null && serviceBeanMap.size()>0) {
+        if (serviceBeanMap != null && !serviceBeanMap.isEmpty()) {
             for (Object serviceBean : serviceBeanMap.values()) {
                 // valid
-                if (serviceBean.getClass().getInterfaces().length ==0) {
+                if (serviceBean.getClass().getInterfaces().length == 0) {
                     throw new XxlRpcException("xxl-rpc, service(XxlRpcService) must inherit interface.");
                 }
                 // add service
@@ -37,9 +37,7 @@ public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implement
                 super.addService(iface, version, serviceBean);
             }
         }
-
         // TODO，addServices by api + prop
-
     }
 
     @Override

@@ -32,17 +32,14 @@ import static com.wugui.datax.executor.service.logparse.AnalysisStatistics.analy
 @JobHandler(value = "executorJobHandler")
 @Component
 public class ExecutorJobHandler extends IJobHandler {
-
     @Value("${datax.executor.jsonpath}")
     private String jsonPath;
 
     @Value("${datax.pypath}")
     private String dataXPyPath;
 
-
     @Override
     public ReturnT<String> execute(TriggerParam trigger) {
-
         int exitValue = -1;
         Thread errThread = null;
         String tmpFilePath;
@@ -51,7 +48,7 @@ public class ExecutorJobHandler extends IJobHandler {
         tmpFilePath = generateTemJsonFile(trigger.getJobJson());
 
         try {
-            String[] cmdarrayFinal = buildDataXExecutorCmd(trigger, tmpFilePath,dataXPyPath);
+            String[] cmdarrayFinal = buildDataXExecutorCmd(trigger, tmpFilePath, dataXPyPath);
             final Process process = Runtime.getRuntime().exec(cmdarrayFinal);
             String prcsId = ProcessUtil.getProcessId(process);
             JobLogger.log("------------------DataX process id: " + prcsId);
@@ -60,7 +57,7 @@ public class ExecutorJobHandler extends IJobHandler {
             HandleProcessCallbackParam prcs = new HandleProcessCallbackParam(trigger.getLogId(), trigger.getLogDateTime(), prcsId);
             ProcessCallbackThread.pushCallBack(prcs);
             // log-thread
-            Thread futureThread = null;
+            Thread futureThread;
             FutureTask<LogStatistics> futureTask = new FutureTask<>(() -> analysisStatisticsLog(new BufferedInputStream(process.getInputStream())));
             futureThread = new Thread(futureTask);
             futureThread.start();
@@ -96,8 +93,6 @@ public class ExecutorJobHandler extends IJobHandler {
             return new ReturnT<>(IJobHandler.FAIL.getCode(), "command exit value(" + exitValue + ") is failed");
         }
     }
-
-
 
     private String generateTemJsonFile(String jobJson) {
         String tmpFilePath;

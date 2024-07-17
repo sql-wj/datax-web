@@ -24,7 +24,7 @@ public final class Constants {
     public static final String SPLIT_AT = "@";
     public static final String SPLIT_COLON = ";";
     public static final String SPLIT_POINT = ".";
-    public static final String SPLIT_SCOLON=":";
+    public static final String SPLIT_SCOLON = ":";
     public static final String SPLIT_HYPHEN = "-";
     public static final String SPLIT_DIVIDE = "/";
     public static final String SPLIT_STAR = "*";

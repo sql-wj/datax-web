@@ -19,7 +19,6 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-
 public class ExecutorBizImplTest {
 
     public JobExecutor jobExecutor = null;
@@ -61,7 +60,7 @@ public class ExecutorBizImplTest {
     }
 
     @After
-    public void after(){
+    public void after() {
         if (jobExecutor != null) {
             jobExecutor.destroy();
         }
@@ -75,13 +74,13 @@ public class ExecutorBizImplTest {
 
         // Assert result
         Assert.assertNotNull(retval);
-        Assert.assertNull(((ReturnT<String>) retval).getContent());
+        Assert.assertNull(retval.getContent());
         Assert.assertEquals(200, retval.getCode());
         Assert.assertNull(retval.getMsg());
     }
 
     @Test
-    public void idleBeat(){
+    public void idleBeat() {
         final int jobId = 0;
 
         // Act
@@ -89,13 +88,13 @@ public class ExecutorBizImplTest {
 
         // Assert result
         Assert.assertNotNull(retval);
-        Assert.assertNull(((ReturnT<String>) retval).getContent());
+        Assert.assertNull(retval.getContent());
         Assert.assertEquals(500, retval.getCode());
         Assert.assertEquals("job thread is running or has trigger queue.", retval.getMsg());
     }
 
     @Test
-    public void kill(){
+    public void kill() {
         final int jobId = 0;
 
         // Act
@@ -103,13 +102,13 @@ public class ExecutorBizImplTest {
 
         // Assert result
         Assert.assertNotNull(retval);
-        Assert.assertNull(((ReturnT<String>) retval).getContent());
+        Assert.assertNull(retval.getContent());
         Assert.assertEquals(200, retval.getCode());
         Assert.assertNull(retval.getMsg());
     }
 
     @Test
-    public void log(){
+    public void log() {
         final long logDateTim = 0L;
         final long logId = 0;
         final int fromLineNum = 0;
@@ -122,7 +121,7 @@ public class ExecutorBizImplTest {
     }
 
     @Test
-    public void run(){
+    public void run() {
         // trigger data
         final TriggerParam triggerParam = new TriggerParam();
         triggerParam.setJobId(1);

@@ -16,12 +16,12 @@ import java.io.File;
  */
 public class ScriptJobHandler extends IJobHandler {
 
-    private int jobId;
-    private long glueUpdatetime;
-    private String gluesource;
-    private GlueTypeEnum glueType;
+    private final int jobId;
+    private final long glueUpdatetime;
+    private final String gluesource;
+    private final GlueTypeEnum glueType;
 
-    public ScriptJobHandler(int jobId, long glueUpdatetime, String gluesource, GlueTypeEnum glueType){
+    public ScriptJobHandler(int jobId, long glueUpdatetime, String gluesource, GlueTypeEnum glueType) {
         this.jobId = jobId;
         this.glueUpdatetime = glueUpdatetime;
         this.gluesource = gluesource;
@@ -31,9 +31,9 @@ public class ScriptJobHandler extends IJobHandler {
         File glueSrcPath = new File(JobFileAppender.getGlueSrcPath());
         if (glueSrcPath.exists()) {
             File[] glueSrcFileList = glueSrcPath.listFiles();
-            if (glueSrcFileList!=null && glueSrcFileList.length>0) {
+            if (glueSrcFileList != null) {
                 for (File glueSrcFileItem : glueSrcFileList) {
-                    if (glueSrcFileItem.getName().startsWith(jobId +"_")) {
+                    if (glueSrcFileItem.getName().startsWith(jobId + "_")) {
                         glueSrcFileItem.delete();
                     }
                 }
@@ -79,8 +79,8 @@ public class ScriptJobHandler extends IJobHandler {
         scriptParams[2] = String.valueOf(shardingVO.getTotal());
 
         // invoke
-        JobLogger.log("----------- script file:"+ scriptFileName +" -----------");
-        int exitValue = ScriptUtil.execToFile(cmd, scriptFileName, logFileName,tgParam.getLogId(),tgParam.getLogDateTime(), scriptParams);
+        JobLogger.log("----------- script file:" + scriptFileName + " -----------");
+        int exitValue = ScriptUtil.execToFile(cmd, scriptFileName, logFileName, tgParam.getLogId(), tgParam.getLogDateTime(), scriptParams);
 
         if (exitValue == 0) {
             return IJobHandler.SUCCESS;

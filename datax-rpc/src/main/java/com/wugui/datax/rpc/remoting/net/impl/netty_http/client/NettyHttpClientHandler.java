@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
 public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpClientHandler.class);
 
+    private final XxlRpcInvokerFactory xxlRpcInvokerFactory;
+    private final Serializer serializer;
+    private final NettyHttpConnectClient nettyHttpConnectClient;
 
-    private XxlRpcInvokerFactory xxlRpcInvokerFactory;
-    private Serializer serializer;
-    private NettyHttpConnectClient nettyHttpConnectClient;
     public NettyHttpClientHandler(final XxlRpcInvokerFactory xxlRpcInvokerFactory, Serializer serializer, final NettyHttpConnectClient nettyHttpConnectClient) {
         this.xxlRpcInvokerFactory = xxlRpcInvokerFactory;
         this.serializer = serializer;
@@ -33,8 +33,7 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
-
+    protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) {
         // valid status
         if (!HttpResponseStatus.OK.equals(msg.status())) {
             throw new XxlRpcException("xxl-rpc response status invalid.");
@@ -53,25 +52,18 @@ public class NettyHttpClientHandler extends SimpleChannelInboundHandler<FullHttp
 
         // notify response
         xxlRpcInvokerFactory.notifyInvokerFuture(xxlRpcResponse.getRequestId(), xxlRpcResponse);
-
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         //super.exceptionCaught(ctx, cause);
         logger.error(">>>>>>>>>>> xxl-rpc netty_http client caught exception", cause);
         ctx.close();
     }
 
-    /*@Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        // retry
-        super.channelInactive(ctx);
-    }*/
-
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent){
+        if (evt instanceof IdleStateEvent) {
             /*ctx.channel().close();      // close idle channel
             logger.debug(">>>>>>>>>>> xxl-rpc netty_http client close an idle channel.");*/
 

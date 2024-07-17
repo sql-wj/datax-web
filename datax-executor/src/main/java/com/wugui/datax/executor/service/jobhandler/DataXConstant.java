@@ -6,12 +6,11 @@ package com.wugui.datax.executor.service.jobhandler;
  * @author jingwk 2019-12-15
  */
 public class DataXConstant {
-
     public static final String SPLIT_SPACE = " ";
 
     public static final String TRANSFORM_SPLIT_SPACE = "\" \"";
 
-    public static final String PERCENT ="%";
+    public static final String PERCENT = "%";
 
     public static final String TRANSFORM_QUOTES = "\"";
 

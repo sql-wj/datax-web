@@ -1,6 +1,5 @@
 package com.wugui.datax.rpc.registry;
 
-
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;

@@ -217,7 +217,7 @@ public class ServletUtils {
      */
     public static Map<String, Object> getParameters(ServletRequest request) {
         if (request == null) {
-            return CollectionUtil.newHashMap();
+            return new HashMap<>();
         }
         return getParametersStartingWith(request, "");
     }

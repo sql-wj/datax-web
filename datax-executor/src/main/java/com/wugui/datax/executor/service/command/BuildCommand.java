@@ -27,10 +27,6 @@ public class BuildCommand {
 
     /**
      * DataX command build
-     * @param tgParam
-     * @param tmpFilePath
-     * @param dataXPyPath
-     * @return
      */
     public static String[] buildDataXExecutorCmd(TriggerParam tgParam, String tmpFilePath, String dataXPyPath) {
         // command process
@@ -79,7 +75,6 @@ public class BuildCommand {
                 }
                 //buildPartitionCM(doc, partitionStr);
                 doc.append(TRANSFORM_QUOTES);
-
             } else if (IncrementTypeEnum.ID.getCode() == incrementType) {
                 long startId = tgParam.getStartId();
                 long endId = tgParam.getEndId();
@@ -100,7 +95,6 @@ public class BuildCommand {
         JobLogger.log("------------------Command parameters:" + doc);
         return doc.toString();
     }
-
 
     private void buildPartitionCM(StringBuilder doc, String partitionStr) {
         if (StringUtils.isNotBlank(partitionStr)) {

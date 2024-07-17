@@ -10,16 +10,11 @@ import java.util.Map;
  */
 public class BasicJson {
 
-
     private static final BasicJsonReader basicJsonReader = new BasicJsonReader();
     private static final BasicJsonwriter basicJsonwriter = new BasicJsonwriter();
 
-
     /**
      * object to json
-     *
-     * @param object
-     * @return
      */
     public static String toJson(Object object) {
         return basicJsonwriter.toJson(object);
@@ -27,9 +22,6 @@ public class BasicJson {
 
     /**
      * parse json to map
-     *
-     * @param json
-     * @return only for filed type "null、ArrayList、LinkedHashMap、String、Long、Double、..."
      */
     public static Map<String, Object> parseMap(String json) {
         return basicJsonReader.parseMap(json);
@@ -37,14 +29,10 @@ public class BasicJson {
 
     /**
      * json to List
-     *
-     * @param json
-     * @return
      */
     public static List<Object> parseList(String json) {
         return basicJsonReader.parseList(json);
     }
-
 
     public static void main(String[] args) {
         Map<String, Object> result = new HashMap<>();
@@ -62,7 +50,6 @@ public class BasicJson {
 
         List<Object> listInt = parseList("[111,222,33]");
         System.out.println(listInt);
-
     }
 
 

@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author xuxueli 2018-10-19
  */
 public abstract class ConnectClient {
-    protected static transient Logger logger = LoggerFactory.getLogger(ConnectClient.class);
+    protected static Logger logger = LoggerFactory.getLogger(ConnectClient.class);
 
     // ---------------------- iface ----------------------
 
@@ -27,7 +27,6 @@ public abstract class ConnectClient {
 
     public abstract void send(XxlRpcRequest xxlRpcRequest) throws Exception;
 
-
     // ---------------------- client pool map ----------------------
 
     /**
@@ -36,36 +35,29 @@ public abstract class ConnectClient {
     public static void asyncSend(XxlRpcRequest xxlRpcRequest, String address,
                                  Class<? extends ConnectClient> connectClientImpl,
                                  final XxlRpcReferenceBean xxlRpcReferenceBean) throws Exception {
-
         // client pool	[tips03 : may save 35ms/100invoke if move it to constructor, but it is necessary. cause by ConcurrentHashMap.get]
         ConnectClient clientPool = ConnectClient.getPool(address, connectClientImpl, xxlRpcReferenceBean);
 
-        try {
-            // do invoke
-            clientPool.send(xxlRpcRequest);
-        } catch (Exception e) {
-            throw e;
-        }
-
+        // do invoke
+        clientPool.send(xxlRpcRequest);
     }
 
     private static volatile ConcurrentMap<String, ConnectClient> connectClientMap;        // (static) alread addStopCallBack
-    private static volatile ConcurrentMap<String, Object> connectClientLockMap = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Object> connectClientLockMap = new ConcurrentHashMap<>();
 
     private static ConnectClient getPool(String address, Class<? extends ConnectClient> connectClientImpl,
                                          final XxlRpcReferenceBean xxlRpcReferenceBean) throws Exception {
-
         // init base compont, avoid repeat init
         if (connectClientMap == null) {
             synchronized (ConnectClient.class) {
                 if (connectClientMap == null) {
                     // init
-                    connectClientMap = new ConcurrentHashMap<String, ConnectClient>();
+                    connectClientMap = new ConcurrentHashMap<>();
                     // stop callback
                     xxlRpcReferenceBean.getInvokerFactory().addStopCallBack(new BaseCallback() {
                         @Override
-                        public void run() throws Exception {
-                            if (connectClientMap.size() > 0) {
+                        public void run() {
+                            if (!connectClientMap.isEmpty()) {
                                 for (String key : connectClientMap.keySet()) {
                                     ConnectClient clientPool = connectClientMap.get(key);
                                     clientPool.close();
@@ -115,10 +107,8 @@ public abstract class ConnectClient {
                 connectClient_new.close();
                 throw e;
             }
-
             return connectClient_new;
         }
-
     }
 
 }

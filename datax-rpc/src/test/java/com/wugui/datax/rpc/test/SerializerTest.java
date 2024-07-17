@@ -15,7 +15,7 @@ public class SerializerTest {
         Serializer serializer = HessianSerializer.class.newInstance();
         System.out.println(serializer);
         try {
-            Map<String, String> map = new HashMap<String, String>();
+            Map<String, String> map = new HashMap<>();
             map.put("aaa", "111");
             map.put("bbb", "222");
             System.out.println(serializer.deserialize(serializer.serialize("ddddddd"), String.class));

@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
  * @author xuxueli 2017-12-29 16:23:43
  */
 public class JobLogFileCleanThread {
-    private static Logger logger = LoggerFactory.getLogger(JobLogFileCleanThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobLogFileCleanThread.class);
 
-    private static JobLogFileCleanThread instance = new JobLogFileCleanThread();
+    private static final JobLogFileCleanThread instance = new JobLogFileCleanThread();
 
     public static JobLogFileCleanThread getInstance() {
         return instance;
@@ -52,9 +52,8 @@ public class JobLogFileCleanThread {
 
                         Date todayDate = todayCal.getTime();
                         for (File childFile : childDirs) {
-
                             // valid
-                            if (!childFile.isDirectory() || childFile.getName().indexOf("-") == -1) {
+                            if (!childFile.isDirectory() || !childFile.getName().contains("-")) {
                                 continue;
                             }
                             // file create date
@@ -79,7 +78,6 @@ public class JobLogFileCleanThread {
                     if (!toStop) {
                         logger.error(e.getMessage(), e);
                     }
-
                 }
 
                 try {
@@ -91,7 +89,6 @@ public class JobLogFileCleanThread {
                 }
             }
             logger.info(">>>>>>>>>>> datax-web, executor JobLogFileCleanThread thread destory.");
-
         });
         localThread.setDaemon(true);
         localThread.setName("datax-web, executor JobLogFileCleanThread");

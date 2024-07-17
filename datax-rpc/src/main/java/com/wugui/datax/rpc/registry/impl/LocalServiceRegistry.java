@@ -19,7 +19,6 @@ public class LocalServiceRegistry extends ServiceRegistry {
      */
     private Map<String, TreeSet<String>> registryData;
 
-
     /**
      * @param param ignore, not use
      */
@@ -33,18 +32,13 @@ public class LocalServiceRegistry extends ServiceRegistry {
         registryData.clear();
     }
 
-
     @Override
     public boolean registry(Set<String> keys, String value) {
-        if (keys == null || keys.size() == 0 || value == null || value.trim().length() == 0) {
+        if (keys == null || keys.isEmpty() || value == null || value.trim().isEmpty()) {
             return false;
         }
         for (String key : keys) {
-            TreeSet<String> values = registryData.get(key);
-            if (values == null) {
-                values = new TreeSet<>();
-                registryData.put(key, values);
-            }
+            TreeSet<String> values = registryData.computeIfAbsent(key, k -> new TreeSet<>());
             values.add(value);
         }
         return true;
@@ -52,7 +46,7 @@ public class LocalServiceRegistry extends ServiceRegistry {
 
     @Override
     public boolean remove(Set<String> keys, String value) {
-        if (keys == null || keys.size() == 0 || value == null || value.trim().length() == 0) {
+        if (keys == null || keys.isEmpty() || value == null || value.trim().isEmpty()) {
             return false;
         }
         for (String key : keys) {
@@ -66,10 +60,10 @@ public class LocalServiceRegistry extends ServiceRegistry {
 
     @Override
     public Map<String, TreeSet<String>> discovery(Set<String> keys) {
-        if (keys == null || keys.size() == 0) {
+        if (keys == null || keys.isEmpty()) {
             return null;
         }
-        Map<String, TreeSet<String>> registryDataTmp = new HashMap<String, TreeSet<String>>();
+        Map<String, TreeSet<String>> registryDataTmp = new HashMap<>();
         for (String key : keys) {
             TreeSet<String> valueSetTmp = discovery(key);
             if (valueSetTmp != null) {

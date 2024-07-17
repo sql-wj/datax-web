@@ -22,8 +22,7 @@ import java.nio.charset.StandardCharsets;
  */
 
 public class ProcessUtil {
-
-    private static Logger logger = LoggerFactory.getLogger(JobThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobThread.class);
 
     public static String getProcessId(Process process) {
         long pid = -1;

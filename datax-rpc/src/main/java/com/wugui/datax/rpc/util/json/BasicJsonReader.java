@@ -1,8 +1,5 @@
 package com.wugui.datax.rpc.util.json;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,8 +9,6 @@ import java.util.Map;
  * @author xuxueli 2018-11-30
  */
 public class BasicJsonReader {
-    private static Logger logger = LoggerFactory.getLogger(BasicJsonwriter.class);
-
 
     public Map<String, Object> parseMap(String json) {
         if (json != null) {
@@ -35,9 +30,8 @@ public class BasicJsonReader {
         throw new IllegalArgumentException("Cannot parse JSON");
     }
 
-
     private List<Object> parseListInternal(String json) {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         json = trimLeadingCharacter(trimTrailingCharacter(json, ']'), '[');
         for (String value : tokenize(json)) {
             list.add(parseInternal(value));
@@ -72,7 +66,7 @@ public class BasicJsonReader {
     }
 
     private Map<String, Object> parseMapInternal(String json) {
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<>();
         json = trimLeadingCharacter(trimTrailingCharacter(json, '}'), '{');
         for (String pair : tokenize(json)) {
             String[] values = trimArrayElements(split(pair, ":"));
@@ -104,12 +98,10 @@ public class BasicJsonReader {
             return new String[0];
         } else {
             String[] result = new String[array.length];
-
             for (int i = 0; i < array.length; ++i) {
                 String element = array[i];
                 result[i] = element != null ? element.trim() : null;
             }
-
             return result;
         }
     }
@@ -164,14 +156,14 @@ public class BasicJsonReader {
 
     // plugin util
     private static String trimTrailingCharacter(String string, char c) {
-        if (string.length() > 0 && string.charAt(string.length() - 1) == c) {
+        if (!string.isEmpty() && string.charAt(string.length() - 1) == c) {
             return string.substring(0, string.length() - 1);
         }
         return string;
     }
 
     private static String trimLeadingCharacter(String string, char c) {
-        if (string.length() > 0 && string.charAt(0) == c) {
+        if (!string.isEmpty() && string.charAt(0) == c) {
             return string.substring(1);
         }
         return string;

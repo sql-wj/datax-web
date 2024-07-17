@@ -15,8 +15,8 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ThreadPoolExecutor;
-
 
 /**
  * netty_http
@@ -26,9 +26,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpServerHandler.class);
 
-
-    private XxlRpcProviderFactory xxlRpcProviderFactory;
-    private ThreadPoolExecutor serverHandlerPool;
+    private final XxlRpcProviderFactory xxlRpcProviderFactory;
+    private final ThreadPoolExecutor serverHandlerPool;
 
     public NettyHttpServerHandler(final XxlRpcProviderFactory xxlRpcProviderFactory, final ThreadPoolExecutor serverHandlerPool) {
         this.xxlRpcProviderFactory = xxlRpcProviderFactory;
@@ -36,7 +35,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
     }
 
     @Override
-    protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
+    protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest msg) {
 
         // request parse
         final byte[] requestBytes = ByteBufUtil.getBytes(msg.content());    // byteBuf.toString(io.netty.util.CharsetUtil.UTF_8);
@@ -44,34 +43,28 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
         final boolean keepAlive = HttpUtil.isKeepAlive(msg);
 
         // do invoke
-        serverHandlerPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                process(ctx, uri, requestBytes, keepAlive);
-            }
-        });
+        serverHandlerPool.execute(() -> process(ctx, uri, requestBytes, keepAlive));
     }
 
-    private void process(ChannelHandlerContext ctx, String uri, byte[] requestBytes, boolean keepAlive){
+    private void process(ChannelHandlerContext ctx, String uri, byte[] requestBytes, boolean keepAlive) {
         String requestId = null;
         try {
-            if ("/services".equals(uri)) {	// services mapping
+            if ("/services".equals(uri)) {    // services mapping
 
                 // request
-                StringBuffer stringBuffer = new StringBuffer("<ui>");
-                for (String serviceKey: xxlRpcProviderFactory.getServiceData().keySet()) {
+                StringBuilder stringBuffer = new StringBuilder("<ui>");
+                for (String serviceKey : xxlRpcProviderFactory.getServiceData().keySet()) {
                     stringBuffer.append("<li>").append(serviceKey).append(": ").append(xxlRpcProviderFactory.getServiceData().get(serviceKey)).append("</li>");
                 }
                 stringBuffer.append("</ui>");
 
                 // response serialize
-                byte[] responseBytes = stringBuffer.toString().getBytes("UTF-8");
+                byte[] responseBytes = stringBuffer.toString().getBytes(StandardCharsets.UTF_8);
 
                 // response-write
                 writeResponse(ctx, keepAlive, responseBytes);
 
             } else {
-
                 // valid
                 if (requestBytes.length == 0) {
                     throw new XxlRpcException("xxl-rpc request data empty.");
@@ -82,7 +75,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
                 requestId = xxlRpcRequest.getRequestId();
 
                 // filter beat
-                if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())){
+                if (Beat.BEAT_ID.equalsIgnoreCase(xxlRpcRequest.getRequestId())) {
                     logger.debug(">>>>>>>>>>> xxl-rpc provider netty_http server read beat-ping.");
                     return;
                 }
@@ -116,7 +109,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
     /**
      * write response
      */
-    private void writeResponse(ChannelHandlerContext ctx, boolean keepAlive, byte[] responseBytes){
+    private void writeResponse(ChannelHandlerContext ctx, boolean keepAlive, byte[] responseBytes) {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(responseBytes));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html;charset=UTF-8");       // HttpHeaderValues.TEXT_PLAIN.toString()
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
@@ -127,7 +120,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
     }
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
     }
 
@@ -139,7 +132,7 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent){
+        if (evt instanceof IdleStateEvent) {
             ctx.channel().close();      // beat 3N, close if idle
             logger.debug(">>>>>>>>>>> xxl-rpc provider netty_http server close an idle channel.");
         } else {

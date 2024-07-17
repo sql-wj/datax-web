@@ -27,11 +27,8 @@ import java.util.concurrent.TimeUnit;
  * @author xuxueli
  */
 public class NettyConnectClient extends ConnectClient {
-
-
     private EventLoopGroup group;
     private Channel channel;
-
 
     @Override
     public void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
@@ -44,21 +41,13 @@ public class NettyConnectClient extends ConnectClient {
 
         this.group = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(group)
-                .channel(NioSocketChannel.class)
-                .handler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    public void initChannel(SocketChannel channel) throws Exception {
-                        channel.pipeline()
-                                .addLast(new IdleStateHandler(0,0, Beat.BEAT_INTERVAL, TimeUnit.SECONDS))    // beat N, close if fail
-                                .addLast(new NettyEncoder(XxlRpcRequest.class, serializer))
-                                .addLast(new NettyDecoder(XxlRpcResponse.class, serializer))
-                                .addLast(new NettyClientHandler(xxlRpcInvokerFactory, thisClient));
-                    }
-                })
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+        bootstrap.group(group).channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel channel) {
+                channel.pipeline().addLast(new IdleStateHandler(0, 0, Beat.BEAT_INTERVAL, TimeUnit.SECONDS))    // beat N, close if fail
+                        .addLast(new NettyEncoder(XxlRpcRequest.class, serializer)).addLast(new NettyDecoder(XxlRpcResponse.class, serializer)).addLast(new NettyClientHandler(xxlRpcInvokerFactory, thisClient));
+            }
+        }).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.SO_KEEPALIVE, true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
         this.channel = bootstrap.connect(host, port).sync().channel();
 
         // valid
@@ -66,10 +55,8 @@ public class NettyConnectClient extends ConnectClient {
             close();
             return;
         }
-
         logger.debug(">>>>>>>>>>> xxl-rpc netty client proxy, connect to server success at host:{}, port:{}", host, port);
     }
-
 
     @Override
     public boolean isValidate() {
@@ -89,7 +76,6 @@ public class NettyConnectClient extends ConnectClient {
         }
         logger.debug(">>>>>>>>>>> xxl-rpc netty client close.");
     }
-
 
     @Override
     public void send(XxlRpcRequest xxlRpcRequest) throws Exception {

@@ -13,7 +13,7 @@ public enum IncrementTypeEnum {
     ID(1, "自增主键"),
     PARTITION(3, "HIVE分区");
 
-    IncrementTypeEnum(int code, String descp){
+    IncrementTypeEnum(int code, String descp) {
         this.code = code;
         this.descp = descp;
     }

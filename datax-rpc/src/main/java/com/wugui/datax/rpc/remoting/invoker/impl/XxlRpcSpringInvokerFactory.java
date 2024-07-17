@@ -16,7 +16,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,10 +26,9 @@ import java.util.Set;
  * @author xuxueli 2018-10-19
  */
 public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProcessorAdapter implements InitializingBean, DisposableBean, BeanFactoryAware {
-    private Logger logger = LoggerFactory.getLogger(XxlRpcSpringInvokerFactory.class);
+    private final Logger logger = LoggerFactory.getLogger(XxlRpcSpringInvokerFactory.class);
 
     // ---------------------- config ----------------------
-
     private Class<? extends ServiceRegistry> serviceRegistryClass;          // class.forname
     private Map<String, String> serviceRegistryParam;
 
@@ -42,7 +40,6 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
     public void setServiceRegistryParam(Map<String, String> serviceRegistryParam) {
         this.serviceRegistryParam = serviceRegistryParam;
     }
-
 
     // ---------------------- util ----------------------
 
@@ -57,7 +54,6 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
 
     @Override
     public boolean postProcessAfterInstantiation(final Object bean, final String beanName) throws BeansException {
-
         // collection
         final Set<String> serviceKeyList = new HashSet<>();
 
@@ -85,7 +81,6 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                 referenceBean.setAccessToken(rpcReference.accessToken());
                 referenceBean.setInvokeCallback(null);
                 referenceBean.setInvokerFactory(xxlRpcInvokerFactory);
-
 
                 // get proxyObj
                 Object serviceProxy;
@@ -117,14 +112,11 @@ public class XxlRpcSpringInvokerFactory extends InstantiationAwareBeanPostProces
                 logger.error(e.getMessage(), e);
             }
         }
-
         return super.postProcessAfterInstantiation(bean, beanName);
     }
 
-
     @Override
     public void destroy() throws Exception {
-
         // stop invoker factory
         xxlRpcInvokerFactory.stop();
     }

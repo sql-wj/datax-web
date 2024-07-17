@@ -22,26 +22,24 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
 /**
  * handler thread
  *
  * @author xuxueli 2016-1-16 19:52:47
  */
 public class JobThread extends Thread {
-    private static Logger logger = LoggerFactory.getLogger(JobThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobThread.class);
 
-    private int jobId;
-    private IJobHandler handler;
-    private LinkedBlockingQueue<TriggerParam> triggerQueue;
-    private Set<Long> triggerLogIdSet;        // avoid repeat trigger for the same TRIGGER_LOG_ID
+    private final int jobId;
+    private final IJobHandler handler;
+    private final LinkedBlockingQueue<TriggerParam> triggerQueue;
+    private final Set<Long> triggerLogIdSet;        // avoid repeat trigger for the same TRIGGER_LOG_ID
 
     private volatile boolean toStop = false;
     private String stopReason;
 
     private boolean running = false;    // if running job
     private int idleTimes = 0;            // idel times
-
 
     public JobThread(int jobId, IJobHandler handler) {
         this.jobId = jobId;
@@ -56,9 +54,6 @@ public class JobThread extends Thread {
 
     /**
      * new trigger to queue
-     *
-     * @param triggerParam
-     * @return
      */
     public ReturnT<String> pushTriggerQueue(TriggerParam triggerParam) {
         // avoid repeat
@@ -74,11 +69,9 @@ public class JobThread extends Thread {
 
     /**
      * kill job thread
-     *
-     * @param stopReason
      */
     public void toStop(String stopReason) {
-        /**
+        /*
          * Thread.interrupt只支持终止线程的阻塞状态(wait、join、sleep)，
          * 在阻塞出抛出InterruptedException异常,但是并不会终止运行的线程本身；
          * 所以需要注意，此处彻底销毁本线程，需要通过共享变量方式；
@@ -89,16 +82,13 @@ public class JobThread extends Thread {
 
     /**
      * is running job
-     *
-     * @return
      */
     public boolean isRunningOrHasQueue() {
-        return running || triggerQueue.size() > 0;
+        return running || !triggerQueue.isEmpty();
     }
 
     @Override
     public void run() {
-
         // init
         try {
             handler.init();
@@ -146,7 +136,9 @@ public class JobThread extends Thread {
 
                             executeResult = new ReturnT<>(IJobHandler.FAIL_TIMEOUT.getCode(), "job execute timeout ");
                         } finally {
-                            futureThread.interrupt();
+                            if (futureThread != null) {
+                                futureThread.interrupt();
+                            }
                         }
                     } else {
                         // just execute
@@ -157,7 +149,7 @@ public class JobThread extends Thread {
                         executeResult = IJobHandler.FAIL;
                     } else {
                         executeResult.setMsg(
-                                (executeResult != null && executeResult.getMsg() != null && executeResult.getMsg().length() > 50000)
+                                executeResult.getMsg() != null && executeResult.getMsg().length() > 50000
                                         ? executeResult.getMsg().substring(0, 50000).concat("...")
                                         : executeResult.getMsg());
                         executeResult.setContent(null);    // limit obj size
@@ -166,7 +158,7 @@ public class JobThread extends Thread {
 
                 } else {
                     if (idleTimes > 30) {
-                        if (triggerQueue.size() == 0) {    // avoid concurrent trigger causes jobId-lost
+                        if (triggerQueue.isEmpty()) {    // avoid concurrent trigger causes jobId-lost
                             JobExecutor.removeJobThread(jobId, "executor idel times over limit.");
                         }
                     }
@@ -191,7 +183,7 @@ public class JobThread extends Thread {
                         TriggerCallbackThread.pushCallBack(new HandleCallbackParam(tgParam.getLogId(), tgParam.getLogDateTime(), executeResult));
                     } else {
                         // is killed
-                        ReturnT<String> stopResult = new ReturnT<String>(ReturnT.FAIL_CODE, stopReason + " [job running, killed]");
+                        ReturnT<String> stopResult = new ReturnT<>(ReturnT.FAIL_CODE, stopReason + " [job running, killed]");
                         TriggerCallbackThread.pushCallBack(new HandleCallbackParam(tgParam.getLogId(), tgParam.getLogDateTime(), stopResult));
                     }
                 }
@@ -199,11 +191,11 @@ public class JobThread extends Thread {
         }
 
         // callback trigger request in queue
-        while (triggerQueue != null && triggerQueue.size() > 0) {
+        while (triggerQueue != null && !triggerQueue.isEmpty()) {
             TriggerParam triggerParam = triggerQueue.poll();
             if (triggerParam != null) {
                 // is killed
-                ReturnT<String> stopResult = new ReturnT<String>(ReturnT.FAIL_CODE, stopReason + " [job not executed, in the job queue, killed.]");
+                ReturnT<String> stopResult = new ReturnT<>(ReturnT.FAIL_CODE, stopReason + " [job not executed, in the job queue, killed.]");
                 TriggerCallbackThread.pushCallBack(new HandleCallbackParam(triggerParam.getLogId(), triggerParam.getLogDateTime(), stopResult));
             }
         }
@@ -214,7 +206,6 @@ public class JobThread extends Thread {
         } catch (Throwable e) {
             logger.error(e.getMessage(), e);
         }
-
         logger.info(">>>>>>>>>>> datax-web JobThread stoped, hashCode:{}", Thread.currentThread());
     }
 }

@@ -28,14 +28,12 @@ import java.util.concurrent.TimeUnit;
  * @author xuxueli 2015-11-24 22:25:15
  */
 public class NettyHttpConnectClient extends ConnectClient {
-
     private EventLoopGroup group;
     private Channel channel;
 
     private Serializer serializer;
     private String address;
     private String host;
-    private DefaultFullHttpRequest beatRequest;
 
     @Override
     public void init(String address, final Serializer serializer, final XxlRpcInvokerFactory xxlRpcInvokerFactory) throws Exception {
@@ -57,7 +55,7 @@ public class NettyHttpConnectClient extends ConnectClient {
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    public void initChannel(SocketChannel channel) throws Exception {
+                    public void initChannel(SocketChannel channel) {
                         channel.pipeline()
                                 .addLast(new IdleStateHandler(0, 0, Beat.BEAT_INTERVAL, TimeUnit.SECONDS))   // beat N, close if fail
                                 .addLast(new HttpClientCodec())
@@ -76,7 +74,6 @@ public class NettyHttpConnectClient extends ConnectClient {
             close();
             return;
         }
-
         logger.debug(">>>>>>>>>>> xxl-rpc netty client proxy, connect to server success at host:{}, port:{}", host, port);
     }
 

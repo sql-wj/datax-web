@@ -16,16 +16,11 @@ import java.util.Map;
  * @author xuxueli 2018-11-25 00:55:31
  */
 public class JobRemotingUtil {
-    private static Logger logger = LoggerFactory.getLogger(JobRemotingUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobRemotingUtil.class);
     public static String XXL_RPC_ACCESS_TOKEN = "XXL-RPC-ACCESS-TOKEN";
 
     /**
      * post
-     *
-     * @param url
-     * @param accessToken
-     * @param requestObj
-     * @return
      */
     public static ReturnT<String> postBody(String url, String accessToken, Object requestObj, int timeout) {
         HttpURLConnection connection = null;
@@ -46,7 +41,7 @@ public class JobRemotingUtil {
             connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             connection.setRequestProperty("Accept-Charset", "application/json;charset=UTF-8");
 
-            if(accessToken!=null && accessToken.trim().length()>0){
+            if (accessToken != null && !accessToken.trim().isEmpty()) {
                 connection.setRequestProperty(XXL_RPC_ACCESS_TOKEN, accessToken);
             }
 
@@ -71,7 +66,7 @@ public class JobRemotingUtil {
             // valid StatusCode
             int statusCode = connection.getResponseCode();
             if (statusCode != 200) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-rpc remoting fail, StatusCode("+ statusCode +") invalid. for url : " + url);
+                return new ReturnT<>(ReturnT.FAIL_CODE, "xxl-rpc remoting fail, StatusCode(" + statusCode + ") invalid. for url : " + url);
             }
 
             // result
@@ -87,24 +82,23 @@ public class JobRemotingUtil {
             try {
                 Map<String, Object> resultMap = BasicJson.parseMap(resultJson);
 
-                ReturnT<String> returnT = new ReturnT<String>();
-                if (resultMap==null) {
+                ReturnT<String> returnT = new ReturnT<>();
+                if (resultMap == null) {
                     returnT.setCode(ReturnT.FAIL_CODE);
                     returnT.setMsg("AdminBizClient Remoting call fail.");
                 } else {
-                    returnT.setCode(Integer.valueOf(String.valueOf(resultMap.get("code"))));
+                    returnT.setCode(Integer.parseInt(String.valueOf(resultMap.get("code"))));
                     returnT.setMsg(String.valueOf(resultMap.get("msg")));
                     returnT.setContent(String.valueOf(resultMap.get("content")));
                 }
                 return returnT;
             } catch (Exception e) {
-                logger.error("xxl-rpc remoting (url="+url+") response content invalid("+ resultJson +").", e);
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-rpc remoting (url="+url+") response content invalid("+ resultJson +").");
+                logger.error("xxl-rpc remoting (url=" + url + ") response content invalid(" + resultJson + ").", e);
+                return new ReturnT<>(ReturnT.FAIL_CODE, "xxl-rpc remoting (url=" + url + ") response content invalid(" + resultJson + ").");
             }
-
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-rpc remoting error("+ e.getMessage() +"), for url : " + url);
+            return new ReturnT<>(ReturnT.FAIL_CODE, "xxl-rpc remoting error(" + e.getMessage() + "), for url : " + url);
         } finally {
             try {
                 if (bufferedReader != null) {

@@ -11,7 +11,7 @@ import com.wugui.datax.rpc.remoting.net.params.XxlRpcRequest;
  */
 public class NettyHttpClient extends Client {
 
-    private Class<? extends ConnectClient> connectClientImpl = NettyHttpConnectClient.class;
+    private final Class<? extends ConnectClient> connectClientImpl = NettyHttpConnectClient.class;
 
     @Override
     public void asyncSend(String address, XxlRpcRequest xxlRpcRequest) throws Exception {

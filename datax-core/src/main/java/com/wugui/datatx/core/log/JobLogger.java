@@ -14,28 +14,21 @@ import java.util.Date;
  * Created by xuxueli on 17/4/28.
  */
 public class JobLogger {
-    private static Logger logger = LoggerFactory.getLogger("datax-web logger");
-
-
+    private static final Logger logger = LoggerFactory.getLogger("datax-web logger");
 
     /**
      * append log
-     *
-     * @param call
-     * @param appendLog
      */
     private static void logDetail(StackTraceElement call, String appendLog) {
-
         // "yyyy-MM-dd HH:mm:ss [fileName.MethodName-LineNumber] log";
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(DateUtil.formatDateTime(new Date())).append(" ")
-                .append("[" + call.getFileName().replace("java", "") + call.getMethodName())
-                .append("-" + call.getLineNumber() + "]").append(" ")
-                .append(appendLog != null ? appendLog : "");
-        String formatAppendLog = buffer.toString();
+        assert call.getFileName() != null;
+        String formatAppendLog = DateUtil.formatDateTime(new Date()) + " " +
+                "[" + call.getFileName().replace("java", "") + call.getMethodName() +
+                "-" + call.getLineNumber() + "]" + " " +
+                (appendLog != null ? appendLog : "");
 
         String logFileName = JobFileAppender.contextHolder.get();
-        if (logFileName != null && logFileName.trim().length() > 0) {
+        if (logFileName != null && !logFileName.trim().isEmpty()) {
             JobFileAppender.appendLog(logFileName, formatAppendLog);
         } else {
             logger.info(">>> {}", formatAppendLog);
@@ -64,8 +57,6 @@ public class JobLogger {
 
     /**
      * append exception stack
-     *
-     * @param e
      */
     public static void log(Throwable e) {
 

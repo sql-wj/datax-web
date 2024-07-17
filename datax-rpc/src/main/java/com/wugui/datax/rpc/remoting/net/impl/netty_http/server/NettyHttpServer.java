@@ -31,7 +31,6 @@ public class NettyHttpServer extends Server {
 
     @Override
     public void start(final XxlRpcProviderFactory xxlRpcProviderFactory) {
-
         thread = new Thread(() -> {
             // param
             final ThreadPoolExecutor serverHandlerPool = ThreadPoolUtil.makeServerThreadPool(
@@ -68,13 +67,8 @@ public class NettyHttpServer extends Server {
                 future.channel().closeFuture().sync();
 
             } catch (InterruptedException e) {
-                if (e instanceof InterruptedException) {
-                    logger.info(">>>>>>>>>>> xxl-rpc remoting server stop.");
-                } else {
-                    logger.error(">>>>>>>>>>> xxl-rpc remoting server error.", e);
-                }
+                logger.info(">>>>>>>>>>> xxl-rpc remoting server stop.");
             } finally {
-
                 // stop
                 try {
                     serverHandlerPool.shutdown();    // shutdownNow
@@ -88,7 +82,6 @@ public class NettyHttpServer extends Server {
                     logger.error(e.getMessage(), e);
                 }
             }
-
         });
         thread.setDaemon(true);    // daemon, service jvm, user thread leave >>> daemon leave >>> jvm leave
         thread.start();

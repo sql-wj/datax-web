@@ -18,13 +18,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
-
 /**
  * Created by xuxueli on 17/3/1.
  */
-
 public class ExecutorBizImpl implements ExecutorBiz {
-    private static Logger logger = LoggerFactory.getLogger(ExecutorBizImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExecutorBizImpl.class);
 
     @Override
     public ReturnT<String> beat() {
@@ -33,7 +31,6 @@ public class ExecutorBizImpl implements ExecutorBiz {
 
     @Override
     public ReturnT<String> idleBeat(int jobId) {
-
         // isRunningOrHasQueue
         JobThread jobThread = JobExecutor.loadJobThread(jobId);
         if (jobThread != null && jobThread.isRunningOrHasQueue()) {
@@ -50,7 +47,6 @@ public class ExecutorBizImpl implements ExecutorBiz {
             JobExecutor.removeJobThread(jobId, "scheduling center kill job.");
             return ReturnT.SUCCESS;
         }
-
         return new ReturnT<>(ReturnT.SUCCESS_CODE, "job thread already killed.");
     }
 
@@ -73,7 +69,6 @@ public class ExecutorBizImpl implements ExecutorBiz {
         // valid：jobHandler + jobThread
         GlueTypeEnum glueTypeEnum = GlueTypeEnum.match(triggerParam.getGlueType());
         if (GlueTypeEnum.BEAN == glueTypeEnum) {
-
             // new jobhandler
             IJobHandler newJobHandler = JobExecutor.loadJobHandler(triggerParam.getExecutorHandler());
 
@@ -95,7 +90,6 @@ public class ExecutorBizImpl implements ExecutorBiz {
             }
 
         } else if (GlueTypeEnum.GLUE_GROOVY == glueTypeEnum) {
-
             // valid old jobThread
             if (jobThread != null &&
                     !(jobThread.getHandler() instanceof GlueJobHandler
@@ -114,11 +108,10 @@ public class ExecutorBizImpl implements ExecutorBiz {
                     jobHandler = new GlueJobHandler(originJobHandler, triggerParam.getGlueUpdatetime());
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
-                    return new ReturnT<String>(ReturnT.FAIL_CODE, e.getMessage());
+                    return new ReturnT<>(ReturnT.FAIL_CODE, e.getMessage());
                 }
             }
         } else if (glueTypeEnum != null && glueTypeEnum.isScript()) {
-
             // valid old jobThread
             if (jobThread != null &&
                     !(jobThread.getHandler() instanceof ScriptJobHandler
@@ -164,8 +157,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
         }
 
         // push data to queue
-        ReturnT<String> pushResult = jobThread.pushTriggerQueue(triggerParam);
-        return pushResult;
+        return jobThread.pushTriggerQueue(triggerParam);
     }
 
 }

@@ -12,7 +12,7 @@ import java.util.TreeSet;
  */
 public class XxlRpcLoadBalanceRandomStrategy extends XxlRpcLoadBalance {
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     @Override
     public String route(String serviceKey, TreeSet<String> addressSet) {
@@ -20,8 +20,7 @@ public class XxlRpcLoadBalanceRandomStrategy extends XxlRpcLoadBalance {
         String[] addressArr = addressSet.toArray(new String[addressSet.size()]);
 
         // random
-        String finalAddress = addressArr[random.nextInt(addressSet.size())];
-        return finalAddress;
+        return addressArr[random.nextInt(addressSet.size())];
     }
 
 }
