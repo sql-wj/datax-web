@@ -51,12 +51,12 @@
             <version>${oshi.core.version}</version>
             <exclusions>
                 <exclusion>
+                    <artifactId>jna-platform</artifactId>
                     <groupId>net.java.dev.jna</groupId>
-                    <artifactId>jna</artifactId>
                 </exclusion>
                 <exclusion>
+                    <artifactId>jna</artifactId>
                     <groupId>net.java.dev.jna</groupId>
-                    <artifactId>jna-platform</artifactId>
                 </exclusion>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
@@ -81,19 +81,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
