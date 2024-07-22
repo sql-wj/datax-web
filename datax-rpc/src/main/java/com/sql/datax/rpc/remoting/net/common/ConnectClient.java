@@ -11,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * @author xuxueli 2018-10-19
- */
 public abstract class ConnectClient {
     protected static Logger logger = LoggerFactory.getLogger(ConnectClient.class);
 

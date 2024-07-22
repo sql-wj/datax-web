@@ -12,8 +12,6 @@ import java.util.Date;
 
 /**
  * store trigger log in each log-file
- *
- * @author xuxueli 2016-3-12 19:25:12
  */
 public class JobFileAppender {
     private static final Logger logger = LoggerFactory.getLogger(JobFileAppender.class);

@@ -11,8 +11,6 @@ import java.io.IOException;
 
 /**
  * hessian serialize
- *
- * @author xuxueli 2015-9-26 02:53:29
  */
 public class HessianSerializer extends Serializer {
 

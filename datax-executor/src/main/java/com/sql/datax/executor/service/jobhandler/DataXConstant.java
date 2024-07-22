@@ -2,8 +2,6 @@ package com.sql.datax.executor.service.jobhandler;
 
 /**
  * DataX启动参数
- *
- * @author jingwk 2019-12-15
  */
 public class DataXConstant {
     public static final String SPLIT_SPACE = " ";

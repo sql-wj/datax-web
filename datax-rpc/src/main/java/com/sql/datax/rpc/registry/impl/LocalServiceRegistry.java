@@ -9,8 +9,6 @@ import java.util.TreeSet;
 
 /**
  * service registry for "local"
- *
- * @author xuxueli 2018-10-17
  */
 public class LocalServiceRegistry extends ServiceRegistry {
 

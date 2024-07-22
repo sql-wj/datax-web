@@ -10,8 +10,6 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * call back future
- *
- * @author xuxueli 2015-11-5 14:26:37
  */
 public class XxlRpcFutureResponse implements Future<XxlRpcResponse> {
     private final XxlRpcInvokerFactory invokerFactory;

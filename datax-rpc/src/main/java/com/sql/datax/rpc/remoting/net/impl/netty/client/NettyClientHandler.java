@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * rpc netty client handler
- *
- * @author xuxueli 2015-10-31 18:00:27
  */
 public class NettyClientHandler extends SimpleChannelInboundHandler<XxlRpcResponse> {
     private static final Logger logger = LoggerFactory.getLogger(NettyClientHandler.class);

@@ -1,8 +1,5 @@
 package com.sql.datatx.core.glue;
 
-/**
- * Created by xuxueli on 17/4/26.
- */
 public enum GlueTypeEnum {
 
     BEAN("BEAN", false, null, null),

@@ -1,8 +1,5 @@
 package com.sql.datax.rpc.util;
 
-/**
- * @author xuxueli 2018-10-20 23:00:40
- */
 public class XxlRpcException extends RuntimeException {
 
     private static final long serialVersionUID = 42L;

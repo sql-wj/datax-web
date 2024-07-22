@@ -16,8 +16,6 @@ import java.util.concurrent.*;
 
 /**
  * xxl-rpc invoker factory, init service-registry
- *
- * @author xuxueli 2018-10-19
  */
 public class XxlRpcInvokerFactory {
     private static final Logger logger = LoggerFactory.getLogger(XxlRpcInvokerFactory.class);

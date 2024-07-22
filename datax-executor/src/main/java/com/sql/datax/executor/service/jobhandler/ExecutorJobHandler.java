@@ -25,10 +25,7 @@ import static com.sql.datax.executor.service.logparse.AnalysisStatistics.analysi
 
 /**
  * DataX任务运行
- *
- * @author jingwk 2019-11-16
  */
-
 @JobHandler(value = "executorJobHandler")
 @Component
 public class ExecutorJobHandler extends IJobHandler {

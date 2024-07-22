@@ -11,9 +11,6 @@ import com.sql.datatx.core.util.ShardingUtil;
 
 import java.io.File;
 
-/**
- * Created by xuxueli on 17/4/27.
- */
 public class ScriptJobHandler extends IJobHandler {
 
     private final int jobId;

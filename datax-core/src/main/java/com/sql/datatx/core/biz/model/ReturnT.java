@@ -6,7 +6,6 @@ import java.io.Serializable;
  * common return
  *
  * @param <T>
- * @author xuxueli 2015-12-4 16:32:31
  */
 public class ReturnT<T> implements Serializable {
     private static final long serialVersionUID = 42L;

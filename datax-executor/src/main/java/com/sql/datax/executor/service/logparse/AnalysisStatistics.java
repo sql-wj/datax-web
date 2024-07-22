@@ -14,10 +14,7 @@ import static com.sql.datax.executor.service.jobhandler.DataXConstant.*;
 
 /**
  * Log of analysis statistics
- *
- * @author jingwk 2020-06-07
  */
-
 public class AnalysisStatistics {
 
     /**

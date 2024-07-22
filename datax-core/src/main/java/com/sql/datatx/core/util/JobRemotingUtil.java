@@ -12,9 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
-/**
- * @author xuxueli 2018-11-25 00:55:31
- */
 public class JobRemotingUtil {
     private static final Logger logger = LoggerFactory.getLogger(JobRemotingUtil.class);
     public static String XXL_RPC_ACCESS_TOKEN = "XXL-RPC-ACCESS-TOKEN";

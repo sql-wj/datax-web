@@ -15,8 +15,6 @@ import java.util.TreeSet;
  * 单个JOB对应的每个执行器，使用频率最低的优先被选举
  * a(*)、LFU(Least Frequently Used)：最不经常使用，频率/次数
  * b、LRU(Least Recently Used)：最近最久未使用，时间
- *
- * @author xuxueli 2018-12-04
  */
 public class XxlRpcLoadBalanceConsistentHashStrategy extends XxlRpcLoadBalance {
     private final int VIRTUAL_NODE_NUM = 5;

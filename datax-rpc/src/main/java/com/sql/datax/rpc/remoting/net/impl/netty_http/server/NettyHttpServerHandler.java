@@ -20,8 +20,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * netty_http
- *
- * @author xuxueli 2015-11-24 22:25:15
  */
 public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpServerHandler.class);

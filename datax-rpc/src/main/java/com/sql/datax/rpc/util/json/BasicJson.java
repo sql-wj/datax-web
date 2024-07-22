@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author xuxueli 2018-11-30
- */
 public class BasicJson {
 
     private static final BasicJsonReader basicJsonReader = new BasicJsonReader();

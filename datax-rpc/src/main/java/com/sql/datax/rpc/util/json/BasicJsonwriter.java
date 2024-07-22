@@ -7,9 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-/**
- * @author xuxueli 2018-11-30
- */
 public class BasicJsonwriter {
     private static final Logger logger = LoggerFactory.getLogger(BasicJsonwriter.class);
 

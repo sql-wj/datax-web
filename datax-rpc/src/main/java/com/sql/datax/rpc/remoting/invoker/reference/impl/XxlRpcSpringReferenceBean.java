@@ -6,8 +6,6 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * rpc reference bean, use by spring xml and annotation (for spring)
- *
- * @author xuxueli 2015-10-29 20:18:32
  */
 public class XxlRpcSpringReferenceBean implements FactoryBean<Object>, InitializingBean {
     // ---------------------- util ----------------------

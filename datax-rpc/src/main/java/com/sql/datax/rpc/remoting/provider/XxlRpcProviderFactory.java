@@ -21,8 +21,6 @@ import java.util.Map;
 
 /**
  * provider
- *
- * @author xuxueli 2015-10-31 22:54:27
  */
 public class XxlRpcProviderFactory {
     private static final Logger logger = LoggerFactory.getLogger(XxlRpcProviderFactory.class);

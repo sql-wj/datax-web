@@ -2,8 +2,6 @@ package com.sql.datatx.core.util;
 
 /**
  * sharding vo
- *
- * @author xuxueli 2017-07-25 21:26:38
  */
 public class ShardingUtil {
     private static final InheritableThreadLocal<ShardingVO> contextHolder = new InheritableThreadLocal<>();

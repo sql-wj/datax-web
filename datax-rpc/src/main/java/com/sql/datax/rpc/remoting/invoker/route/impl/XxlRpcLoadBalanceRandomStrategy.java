@@ -7,8 +7,6 @@ import java.util.TreeSet;
 
 /**
  * random
- *
- * @author xuxueli 2018-12-04
  */
 public class XxlRpcLoadBalanceRandomStrategy extends XxlRpcLoadBalance {
 

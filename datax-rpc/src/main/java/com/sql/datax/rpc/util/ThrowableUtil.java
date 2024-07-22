@@ -3,9 +3,6 @@ package com.sql.datax.rpc.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-/**
- * @author xuxueli 2018-10-20 20:07:26
- */
 public class ThrowableUtil {
 
     /**

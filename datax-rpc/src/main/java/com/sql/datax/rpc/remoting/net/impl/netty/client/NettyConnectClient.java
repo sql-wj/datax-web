@@ -23,8 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * netty pooled client
- *
- * @author xuxueli
  */
 public class NettyConnectClient extends ConnectClient {
     private EventLoopGroup group;

@@ -5,8 +5,6 @@ import java.util.Arrays;
 
 /**
  * request
- *
- * @author xuxueli 2015-10-29 19:39:12
  */
 public class XxlRpcRequest implements Serializable {
     private static final long serialVersionUID = 42L;

@@ -8,8 +8,6 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * lru
- *
- * @author xuxueli 2018-12-04
  */
 public class XxlRpcLoadBalanceLFUStrategy extends XxlRpcLoadBalance {
     private final ConcurrentMap<String, HashMap<String, Integer>> jobLfuMap = new ConcurrentHashMap<>();

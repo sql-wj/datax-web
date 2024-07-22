@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 
 /**
- * @author maokeluo
  * 系统工具
  */
 public class SystemUtils {

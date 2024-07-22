@@ -10,9 +10,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
 
-/**
- * Created by xuxueli on 17/4/28.
- */
 public class JobLogger {
     private static final Logger logger = LoggerFactory.getLogger("datax-web logger");
 

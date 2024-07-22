@@ -2,9 +2,6 @@ package com.sql.datax.rpc.util;
 
 import java.util.concurrent.*;
 
-/**
- * @author xuxueli 2019-02-18
- */
 public class ThreadPoolUtil {
 
     /**

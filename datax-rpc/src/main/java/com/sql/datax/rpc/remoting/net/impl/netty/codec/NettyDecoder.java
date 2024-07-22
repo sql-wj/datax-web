@@ -9,8 +9,6 @@ import java.util.List;
 
 /**
  * decoder
- *
- * @author xuxueli 2015-10-29 19:02:36
  */
 public class NettyDecoder extends ByteToMessageDecoder {
 

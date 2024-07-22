@@ -15,8 +15,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * netty server handler
- *
- * @author xuxueli 2015-10-29 20:07:37
  */
 public class NettyServerHandler extends SimpleChannelInboundHandler<XxlRpcRequest> {
     private static final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);

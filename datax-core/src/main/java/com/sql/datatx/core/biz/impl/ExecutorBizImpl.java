@@ -18,9 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
-/**
- * Created by xuxueli on 17/3/1.
- */
 public class ExecutorBizImpl implements ExecutorBiz {
     private static final Logger logger = LoggerFactory.getLogger(ExecutorBizImpl.class);
 

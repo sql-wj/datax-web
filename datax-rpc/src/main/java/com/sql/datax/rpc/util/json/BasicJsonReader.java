@@ -5,9 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author xuxueli 2018-11-30
- */
 public class BasicJsonReader {
 
     public Map<String, Object> parseMap(String json) {

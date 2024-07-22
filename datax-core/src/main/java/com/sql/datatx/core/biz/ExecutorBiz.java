@@ -4,9 +4,6 @@ import com.sql.datatx.core.biz.model.LogResult;
 import com.sql.datatx.core.biz.model.ReturnT;
 import com.sql.datatx.core.biz.model.TriggerParam;
 
-/**
- * Created by xuxueli on 17/3/1.
- */
 public interface ExecutorBiz {
 
     /**

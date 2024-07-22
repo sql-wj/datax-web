@@ -2,8 +2,6 @@ package com.sql.datax.rpc.remoting.net.params;
 
 /**
  * beat for keep-alive
- *
- * @author xuxueli 2019-09-27
  */
 public final class Beat {
 

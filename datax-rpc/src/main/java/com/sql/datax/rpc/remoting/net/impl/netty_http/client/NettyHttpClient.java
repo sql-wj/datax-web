@@ -6,8 +6,6 @@ import com.sql.datax.rpc.remoting.net.params.XxlRpcRequest;
 
 /**
  * netty_http client
- *
- * @author xuxueli 2015-11-24 22:25:15
  */
 public class NettyHttpClient extends Client {
 

@@ -7,8 +7,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 /**
  * encoder
- *
- * @author xuxueli 2015-10-29 19:43:00
  */
 public class NettyEncoder extends MessageToByteEncoder<Object> {
 

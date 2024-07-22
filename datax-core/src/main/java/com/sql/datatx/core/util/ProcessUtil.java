@@ -15,12 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * ProcessUtil
- *
- * @author jingwk
- * @version 1.0
- * @since 2019/11/09
  */
-
 public class ProcessUtil {
     private static final Logger logger = LoggerFactory.getLogger(JobThread.class);
 

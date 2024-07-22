@@ -11,8 +11,6 @@ import java.util.TreeSet;
  *              - key01(service01)
  *                  - value01 (ip:port01)
  *                  - value02 (ip:port02)
- *
- * @author xuxueli 2018-10-17
  */
 public abstract class ServiceRegistry {
 

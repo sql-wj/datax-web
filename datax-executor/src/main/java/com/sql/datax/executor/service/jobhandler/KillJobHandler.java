@@ -13,8 +13,6 @@ import java.io.File;
 
 /**
  * DataX任务终止
- *
- * @author jingwk 2019-12-16
  */
 @JobHandler(value = "killJobHandler")
 @Component

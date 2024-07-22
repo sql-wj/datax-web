@@ -19,9 +19,6 @@ import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by xuxueli on 16/7/22.
- */
 public class TriggerCallbackThread {
     private static final Logger logger = LoggerFactory.getLogger(TriggerCallbackThread.class);
 

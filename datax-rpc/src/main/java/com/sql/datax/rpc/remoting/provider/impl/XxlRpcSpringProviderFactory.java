@@ -13,8 +13,6 @@ import java.util.Map;
 
 /**
  * xxl-rpc provider (for spring)
- *
- * @author xuxueli 2018-10-18 18:09:20
  */
 public class XxlRpcSpringProviderFactory extends XxlRpcProviderFactory implements ApplicationContextAware, InitializingBean, DisposableBean {
 

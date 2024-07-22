@@ -10,7 +10,6 @@ import oshi.hardware.HardwareAbstractionLayer;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
-
 /**
  * os utils
  */
@@ -21,7 +20,7 @@ public class OSUtils {
     private static final SystemInfo SI = new SystemInfo();
     public static final String TWO_DECIMAL = "0.00";
 
-    private static HardwareAbstractionLayer hal = SI.getHardware();
+    private static final HardwareAbstractionLayer hal = SI.getHardware();
 
     private OSUtils() {
     }

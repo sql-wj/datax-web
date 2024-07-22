@@ -26,8 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * rpc reference bean, use by api
- *
- * @author xuxueli 2015-10-29 20:18:32
  */
 public class XxlRpcReferenceBean {
     private static final Logger logger = LoggerFactory.getLogger(XxlRpcReferenceBean.class);

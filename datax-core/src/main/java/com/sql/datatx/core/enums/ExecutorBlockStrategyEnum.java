@@ -1,8 +1,5 @@
 package com.sql.datatx.core.enums;
 
-/**
- * Created by xuxueli on 17/5/9.
- */
 public enum ExecutorBlockStrategyEnum {
 
     SERIAL_EXECUTION("Serial execution"),

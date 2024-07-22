@@ -6,9 +6,6 @@ import com.sql.datax.rpc.serialize.impl.HessianSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author xuxueli 2015-10-30 21:02:55
- */
 public class SerializerTest {
 
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {

@@ -20,8 +20,6 @@ import static com.sql.datax.executor.service.jobhandler.DataXConstant.*;
 
 /**
  * DataX command build
- *
- * @author jingwk 2020-06-07
  */
 public class BuildCommand {
 

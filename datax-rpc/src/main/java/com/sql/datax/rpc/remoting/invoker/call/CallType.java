@@ -2,8 +2,6 @@ package com.sql.datax.rpc.remoting.invoker.call;
 
 /**
  * rpc call type
- *
- * @author xuxueli 2018-10-19
  */
 public enum CallType {
 

@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * server
- *
- * @author xuxueli 2015-11-24 20:59:49
  */
 public abstract class Server {
     protected static final Logger logger = LoggerFactory.getLogger(Server.class);

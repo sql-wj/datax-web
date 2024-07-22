@@ -24,8 +24,6 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * handler thread
- *
- * @author xuxueli 2016-1-16 19:52:47
  */
 public class JobThread extends Thread {
     private static final Logger logger = LoggerFactory.getLogger(JobThread.class);

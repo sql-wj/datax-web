@@ -2,9 +2,6 @@ package com.sql.datax.rpc.remoting.invoker.route;
 
 import com.sql.datax.rpc.remoting.invoker.route.impl.*;
 
-/**
- * @author xuxueli 2018-12-04
- */
 public enum LoadBalance {
 
     RANDOM(new XxlRpcLoadBalanceRandomStrategy()),

@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.sql</groupId>
         <artifactId>datax-web</artifactId>
-        <version>2.1.4</version>
+        <version>2.1.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>datax-core</artifactId>
@@ -28,34 +28,25 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
-            <version>${groovy.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>${jna.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>${hutool.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>${oshi.core.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>jna-platform</artifactId>
+                    <artifactId>jna</artifactId>
                     <groupId>net.java.dev.jna</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>jna</artifactId>
+                    <artifactId>jna-platform</artifactId>
                     <groupId>net.java.dev.jna</groupId>
                 </exclusion>
                 <exclusion>
@@ -63,6 +54,10 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
         </dependency>
 
         <!-- spring-context -->

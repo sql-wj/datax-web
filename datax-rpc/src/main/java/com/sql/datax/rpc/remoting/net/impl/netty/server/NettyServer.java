@@ -23,8 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * netty rpc server
- *
- * @author xuxueli 2015-10-29 18:17:14
  */
 public class NettyServer extends Server {
 
