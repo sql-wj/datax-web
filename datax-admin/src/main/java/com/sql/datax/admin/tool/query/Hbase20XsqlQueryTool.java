@@ -1,33 +1,22 @@
 package com.sql.datax.admin.tool.query;
 
 import com.google.common.collect.Lists;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import com.mongodb.MongoCredential;
 import com.sql.datax.admin.core.util.LocalCacheUtil;
 import com.sql.datax.admin.entity.JobDatasource;
-import com.sql.datax.admin.tool.database.ColumnInfo;
 import com.sql.datax.admin.util.JdbcUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * for HBase2.X and Phoenix5.X
  */
-
 public class Hbase20XsqlQueryTool extends BaseQueryTool implements QueryToolInterface {
     Connection conn = null;
 
-
     /**
      * 构造方法
-     *
-     * @param jobJdbcDatasource
      */
     public Hbase20XsqlQueryTool(JobDatasource jobJdbcDatasource) throws SQLException {
         super(jobJdbcDatasource);
@@ -46,8 +35,8 @@ public class Hbase20XsqlQueryTool extends BaseQueryTool implements QueryToolInte
 
     @Override
     public List<String> getTableNames(String tableSchema) {
-        DatabaseMetaData metaData = null;
-        List<String> tables = new ArrayList<String>();
+        DatabaseMetaData metaData;
+        List<String> tables = new ArrayList<>();
         ResultSet rs = null;
         try {
             metaData = conn.getMetaData();
@@ -69,7 +58,7 @@ public class Hbase20XsqlQueryTool extends BaseQueryTool implements QueryToolInte
 
     @Override
     public List<String> getColumnNames(String tableName, String datasource) {
-        DatabaseMetaData metaData = null;
+        DatabaseMetaData metaData;
         List<String> columnNames = Lists.newArrayList();
         ResultSet rs = null;
         try {
@@ -87,7 +76,6 @@ public class Hbase20XsqlQueryTool extends BaseQueryTool implements QueryToolInte
             JdbcUtils.close(rs);
         }
 
-
         return columnNames;
     }
 
@@ -102,19 +90,13 @@ public class Hbase20XsqlQueryTool extends BaseQueryTool implements QueryToolInte
             int total = rs.getRow();
             rs.beforeFirst();
             return total;
-        } catch (SQLException sqle) {
-            return -1;
-        } catch (AbstractMethodError ame) {
+        } catch (SQLException | AbstractMethodError sqle) {
             return -1;
         }
     }
 
-
     private void getDataSource(JobDatasource jobDatasource) throws SQLException {
         conn = DriverManager.getConnection(jobDatasource.getJdbcUrl());
-
-
     }
-
 
 }

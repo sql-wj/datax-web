@@ -9,21 +9,14 @@ import com.sql.datax.admin.tool.pojo.DataxHbasePojo;
 import com.sql.datax.admin.tool.pojo.DataxHivePojo;
 import com.sql.datax.admin.tool.pojo.DataxMongoDBPojo;
 import com.sql.datax.admin.tool.pojo.DataxRdbmsPojo;
-import com.sql.datax.admin.util.AESUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
 /**
  * Reader
- *
- * @author zhouhongfa@gz-yibo.com
- * @ClassName BaseReaderPlugin
- * @Version 1.0
- * @since 2019/8/2 16:27
  */
 public abstract class BaseReaderPlugin extends BaseDataxPlugin {
-
 
     @Override
     public Map<String, Object> build(DataxRdbmsPojo plugin) {
@@ -48,7 +41,7 @@ public abstract class BaseReaderPlugin extends BaseDataxPlugin {
             }
             connectionObj.put("table", plugin.getTables());
         }
-        parameterObj.put("splitPk",plugin.getSplitPk());
+        parameterObj.put("splitPk", plugin.getSplitPk());
         connectionObj.put("jdbcUrl", ImmutableList.of(jobDatasource.getJdbcUrl()));
 
         parameterObj.put("connection", ImmutableList.of(connectionObj));
@@ -64,7 +57,9 @@ public abstract class BaseReaderPlugin extends BaseDataxPlugin {
     }
 
     @Override
-    public Map<String, Object> buildHbase(DataxHbasePojo dataxHbasePojo) { return null; }
+    public Map<String, Object> buildHbase(DataxHbasePojo dataxHbasePojo) {
+        return null;
+    }
 
     @Override
     public Map<String, Object> buildMongoDB(DataxMongoDBPojo dataxMongoDBPojo) {

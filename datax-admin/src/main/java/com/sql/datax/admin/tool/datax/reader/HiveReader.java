@@ -7,10 +7,6 @@ import java.util.Map;
 
 /**
  * hive reader 构建类
- *
- * @author jingwk
- * @version 2.0
- * @since 2020/01/05
  */
 public class HiveReader extends BaseReaderPlugin implements DataxReaderInterface {
     @Override
@@ -22,7 +18,6 @@ public class HiveReader extends BaseReaderPlugin implements DataxReaderInterface
     public Map<String, Object> sample() {
         return null;
     }
-
 
     @Override
     public Map<String, Object> buildHive(DataxHivePojo plugin) {

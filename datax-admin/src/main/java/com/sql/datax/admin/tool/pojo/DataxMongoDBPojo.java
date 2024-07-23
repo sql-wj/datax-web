@@ -9,11 +9,6 @@ import java.util.Map;
 
 /**
  * 用于传参，构建json
- *
- * @author jingwk
- * @ClassName DataxMongoDBPojo
- * @Version 2.0
- * @since 2020/03/14 11:15
  */
 @Data
 public class DataxMongoDBPojo {

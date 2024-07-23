@@ -8,8 +8,6 @@ import java.util.Date;
 
 /**
  * xxl-job info
- *
- * @author jingwk  2019-11-17 14:25:49
  */
 @Data
 public class JobTemplate {

@@ -8,11 +8,6 @@ import java.util.Map;
 
 /**
  * 用于传参，构建json
- *
- * @author jingwk
- * @ClassName DataxHivePojo
- * @Version 2.0
- * @since 2020/01/11 17:15
  */
 @Data
 public class DataxHivePojo {
@@ -20,7 +15,7 @@ public class DataxHivePojo {
     /**
      * hive列名
      */
-    private List<Map<String,Object>> columns;
+    private List<Map<String, Object>> columns;
 
     /**
      * 数据源信息

@@ -7,18 +7,15 @@ import com.sql.datax.admin.core.handler.AESEncryptHandler;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * jdbc数据源配置实体类(job_jdbc_datasource)
- *
- * @author zhouhongfa@gz-yibo.com
- * @version v1.0
- * @since 2019-07-30
  */
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel
 @TableName("job_jdbc_datasource")
@@ -131,6 +128,7 @@ public class JobDatasource extends Model<JobDatasource> {
      */
     @ApiModelProperty(value = "数据库名", hidden = true)
     private String databaseName;
+
     /**
      * 获取主键值
      *

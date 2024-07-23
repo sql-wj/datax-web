@@ -18,10 +18,6 @@ import java.util.Map;
 
 /**
  * 基础参数辅助类
- *
- * @author zhouhongfa@gz-yibo.com
- * @version 1.0
- * @since 2019/5/15
  */
 @Slf4j
 public class BaseForm {
@@ -46,6 +42,7 @@ public class BaseForm {
     public BaseForm() {
         try {
             HttpServletRequest request = ServletUtils.getRequest();
+            assert request != null;
             Enumeration<String> params = request.getParameterNames();
             while (params.hasMoreElements()) {
                 String name = params.nextElement();
@@ -54,15 +51,12 @@ public class BaseForm {
             }
             this.parsePagingQueryParams();
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("BaseControlForm initialize parameters setting error：" + e);
+            log.error("BaseControlForm initialize parameters setting error", e);
         }
     }
 
     /**
      * 获取页码
-     *
-     * @return
      */
     public Long getPageNo() {
         String pageNum = StrUtil.toString(this.get("current"));
@@ -74,8 +68,6 @@ public class BaseForm {
 
     /**
      * 获取页大小
-     *
-     * @return
      */
     public Long getPageSize() {
         String pageSize = StrUtil.toString(this.get("size"));
@@ -88,8 +80,6 @@ public class BaseForm {
 
     /**
      * 获得参数信息对象
-     *
-     * @return
      */
     public Map<String, Object> getParameters() {
         return values;
@@ -97,9 +87,6 @@ public class BaseForm {
 
     /**
      * 根据key获取values中的值
-     *
-     * @param name
-     * @return
      */
     public Object get(String name) {
         if (values == null) {
@@ -111,9 +98,6 @@ public class BaseForm {
 
     /**
      * 根据key获取values中String类型值
-     *
-     * @param key
-     * @return String
      */
     public String getString(String key) {
         return StrUtil.toString(get(key));
@@ -121,8 +105,6 @@ public class BaseForm {
 
     /**
      * 获取排序字段
-     *
-     * @return
      */
     public String getSort() {
         return StrUtil.toString(this.values.get("sort"));
@@ -130,8 +112,6 @@ public class BaseForm {
 
     /**
      * 获取排序
-     *
-     * @return
      */
     public String getOrder() {
         return StrUtil.toString(this.values.get("order"));
@@ -139,8 +119,6 @@ public class BaseForm {
 
     /**
      * 获取排序
-     *
-     * @return
      */
     public String getOrderby() {
         return StrUtil.toString(this.values.get("orderby"));
@@ -180,7 +158,6 @@ public class BaseForm {
         }
     }
 
-
     /**
      * 设置参数
      *
@@ -195,8 +172,6 @@ public class BaseForm {
 
     /**
      * 移除参数
-     *
-     * @param name
      */
     public void remove(String name) {
         this.values.remove(name);
@@ -214,9 +189,6 @@ public class BaseForm {
 
     /**
      * 自定义查询组装
-     *
-     * @param map
-     * @return
      */
     protected QueryWrapper<?> pageQueryWrapperCustom(Map<String, Object> map, QueryWrapper<?> queryWrapper) {
         // mybatis plus 分页相关的参数

@@ -33,12 +33,10 @@ import java.util.*;
 
 /**
  * core job action for xxl-job
- *
- * @author xuxueli 2016-5-28 15:30:33
  */
 @Service
 public class JobServiceImpl implements JobService {
-    private static Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Resource
     private JobGroupMapper jobGroupMapper;
@@ -59,7 +57,6 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String glueType, int userId, Integer[] projectIds) {
-
         // page list
         List<JobInfo> list = jobInfoMapper.pageList(start, length, jobGroup, triggerStatus, jobDesc, glueType, userId, projectIds);
         int list_count = jobInfoMapper.pageListCount(start, length, jobGroup, triggerStatus, jobDesc, glueType, userId, projectIds);
@@ -89,10 +86,10 @@ public class JobServiceImpl implements JobService {
         if (jobInfo.getGlueType().equals(GlueTypeEnum.BEAN.getDesc()) && jobInfo.getJobJson().trim().length() <= 2) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobjson")));
         }
-        if (jobInfo.getJobDesc() == null || jobInfo.getJobDesc().trim().length() == 0) {
+        if (jobInfo.getJobDesc() == null || jobInfo.getJobDesc().trim().isEmpty()) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobdesc")));
         }
-        if (jobInfo.getUserId() == 0 ) {
+        if (jobInfo.getUserId() == 0) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_author")));
         }
         if (ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null) == null) {
@@ -104,10 +101,9 @@ public class JobServiceImpl implements JobService {
         if (GlueTypeEnum.match(jobInfo.getGlueType()) == null) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_gluetype") + I18nUtil.getString("system_invalid")));
         }
-        if (GlueTypeEnum.BEAN == GlueTypeEnum.match(jobInfo.getGlueType()) && (jobInfo.getExecutorHandler() == null || jobInfo.getExecutorHandler().trim().length() == 0)) {
+        if (GlueTypeEnum.BEAN == GlueTypeEnum.match(jobInfo.getGlueType()) && (jobInfo.getExecutorHandler() == null || jobInfo.getExecutorHandler().trim().isEmpty())) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + "JobHandler"));
         }
-
 
         if (StringUtils.isBlank(jobInfo.getReplaceParamType()) || !DateFormatUtils.formatList().contains(jobInfo.getReplaceParamType())) {
             jobInfo.setReplaceParamType(DateFormatUtils.TIMESTAMP);
@@ -119,29 +115,29 @@ public class JobServiceImpl implements JobService {
         }
 
         // ChildJobId valid
-        if (jobInfo.getChildJobId() != null && jobInfo.getChildJobId().trim().length() > 0) {
+        if (jobInfo.getChildJobId() != null && !jobInfo.getChildJobId().trim().isEmpty()) {
             String[] childJobIds = jobInfo.getChildJobId().split(",");
             for (String childJobIdItem : childJobIds) {
                 if (StringUtils.isNotBlank(childJobIdItem) && isNumeric(childJobIdItem) && Integer.parseInt(childJobIdItem) > 0) {
                     JobInfo childJobInfo = jobInfoMapper.loadById(Integer.parseInt(childJobIdItem));
                     if (childJobInfo == null) {
-                        return new ReturnT<String>(ReturnT.FAIL_CODE,
+                        return new ReturnT<>(ReturnT.FAIL_CODE,
                                 MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId") + "({0})" + I18nUtil.getString("system_not_found")), childJobIdItem));
                     }
                 } else {
-                    return new ReturnT<String>(ReturnT.FAIL_CODE,
+                    return new ReturnT<>(ReturnT.FAIL_CODE,
                             MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId") + "({0})" + I18nUtil.getString("system_invalid")), childJobIdItem));
                 }
             }
 
             // join , avoid "xxx,,"
-            String temp = "";
+            StringBuilder temp = new StringBuilder();
             for (String item : childJobIds) {
-                temp += item + ",";
+                temp.append(item).append(",");
             }
-            temp = temp.substring(0, temp.length() - 1);
+            temp = new StringBuilder(temp.substring(0, temp.length() - 1));
 
-            jobInfo.setChildJobId(temp);
+            jobInfo.setChildJobId(temp.toString());
         }
 
         // add in db
@@ -168,7 +164,6 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ReturnT<String> update(JobInfo jobInfo) {
-
         // valid
         if (!CronExpression.isValidExpression(jobInfo.getJobCron())) {
             return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid"));
@@ -176,12 +171,12 @@ public class JobServiceImpl implements JobService {
         if (jobInfo.getGlueType().equals(GlueTypeEnum.BEAN.getDesc()) && jobInfo.getJobJson().trim().length() <= 2) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobjson")));
         }
-        if (jobInfo.getJobDesc() == null || jobInfo.getJobDesc().trim().length() == 0) {
+        if (jobInfo.getJobDesc() == null || jobInfo.getJobDesc().trim().isEmpty()) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobdesc")));
         }
 
         if (jobInfo.getProjectId() == 0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobproject")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobproject")));
         }
         if (jobInfo.getUserId() == 0) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_author")));
@@ -194,29 +189,29 @@ public class JobServiceImpl implements JobService {
         }
 
         // ChildJobId valid
-        if (jobInfo.getChildJobId() != null && jobInfo.getChildJobId().trim().length() > 0) {
+        if (jobInfo.getChildJobId() != null && !jobInfo.getChildJobId().trim().isEmpty()) {
             String[] childJobIds = jobInfo.getChildJobId().split(",");
             for (String childJobIdItem : childJobIds) {
-                if (childJobIdItem != null && childJobIdItem.trim().length() > 0 && isNumeric(childJobIdItem)) {
+                if (childJobIdItem != null && !childJobIdItem.trim().isEmpty() && isNumeric(childJobIdItem)) {
                     JobInfo childJobInfo = jobInfoMapper.loadById(Integer.parseInt(childJobIdItem));
                     if (childJobInfo == null) {
-                        return new ReturnT<String>(ReturnT.FAIL_CODE,
+                        return new ReturnT<>(ReturnT.FAIL_CODE,
                                 MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId") + "({0})" + I18nUtil.getString("system_not_found")), childJobIdItem));
                     }
                 } else {
-                    return new ReturnT<String>(ReturnT.FAIL_CODE,
+                    return new ReturnT<>(ReturnT.FAIL_CODE,
                             MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId") + "({0})" + I18nUtil.getString("system_invalid")), childJobIdItem));
                 }
             }
 
             // join , avoid "xxx,,"
-            String temp = "";
+            StringBuilder temp = new StringBuilder();
             for (String item : childJobIds) {
-                temp += item + ",";
+                temp.append(item).append(",");
             }
-            temp = temp.substring(0, temp.length() - 1);
+            temp = new StringBuilder(temp.substring(0, temp.length() - 1));
 
-            jobInfo.setChildJobId(temp);
+            jobInfo.setChildJobId(temp.toString());
         }
 
         // group valid
@@ -237,12 +232,12 @@ public class JobServiceImpl implements JobService {
             try {
                 Date nextValidTime = new CronExpression(jobInfo.getJobCron()).getNextValidTimeAfter(new Date(System.currentTimeMillis() + JobScheduleHelper.PRE_READ_MS));
                 if (nextValidTime == null) {
-                    return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_never_fire"));
+                    return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_never_fire"));
                 }
                 nextTriggerTime = nextValidTime.getTime();
             } catch (ParseException e) {
                 logger.error(e.getMessage(), e);
-                return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid") + " | " + e.getMessage());
+                return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid") + " | " + e.getMessage());
             }
         }
 
@@ -262,7 +257,6 @@ public class JobServiceImpl implements JobService {
         }
         exists_jobInfo.setGlueUpdatetime(new Date());
         jobInfoMapper.update(exists_jobInfo);
-
 
         return ReturnT.SUCCESS;
     }
@@ -285,16 +279,16 @@ public class JobServiceImpl implements JobService {
         JobInfo xxlJobInfo = jobInfoMapper.loadById(id);
 
         // next trigger time (5s后生效，避开预读周期)
-        long nextTriggerTime = 0;
+        long nextTriggerTime;
         try {
             Date nextValidTime = new CronExpression(xxlJobInfo.getJobCron()).getNextValidTimeAfter(new Date(System.currentTimeMillis() + JobScheduleHelper.PRE_READ_MS));
             if (nextValidTime == null) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_never_fire"));
+                return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_never_fire"));
             }
             nextTriggerTime = nextValidTime.getTime();
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
-            return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid") + " | " + e.getMessage());
+            return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid") + " | " + e.getMessage());
         }
 
         xxlJobInfo.setTriggerStatus(1);
@@ -321,7 +315,6 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Map<String, Object> dashboardInfo() {
-
         int jobInfoCount = jobInfoMapper.findAllCount();
         int jobLogCount = 0;
         int jobLogSuccessCount = 0;
@@ -356,17 +349,17 @@ public class JobServiceImpl implements JobService {
     @Override
     public ReturnT<Map<String, Object>> chartInfo() {
         // process
-        List<String> triggerDayList = new ArrayList<String>();
-        List<Integer> triggerDayCountRunningList = new ArrayList<Integer>();
-        List<Integer> triggerDayCountSucList = new ArrayList<Integer>();
-        List<Integer> triggerDayCountFailList = new ArrayList<Integer>();
+        List<String> triggerDayList = new ArrayList<>();
+        List<Integer> triggerDayCountRunningList = new ArrayList<>();
+        List<Integer> triggerDayCountSucList = new ArrayList<>();
+        List<Integer> triggerDayCountFailList = new ArrayList<>();
         int triggerCountRunningTotal = 0;
         int triggerCountSucTotal = 0;
         int triggerCountFailTotal = 0;
 
         List<JobLogReport> logReportList = jobLogReportMapper.queryLogReport(DateUtil.addDays(new Date(), -7), new Date());
 
-        if (logReportList != null && logReportList.size() > 0) {
+        if (logReportList != null && !logReportList.isEmpty()) {
             for (JobLogReport item : logReportList) {
                 String day = DateUtil.formatDate(item.getTriggerDay());
                 int triggerDayCountRunning = item.getRunningCount();
@@ -407,7 +400,6 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ReturnT<String> batchAdd(DataXBatchJsonBuildDto dto) throws IOException {
-
         String key = "system_please_choose";
         List<String> rdTables = dto.getReaderTables();
         List<String> wrTables = dto.getWriterTables();

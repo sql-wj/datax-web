@@ -2,10 +2,9 @@ package com.sql.datax.admin.core.route;
 
 import com.sql.datax.admin.core.route.strategy.*;
 import com.sql.datax.admin.core.util.I18nUtil;
+import lombok.Getter;
 
-/**
- * Created by xuxueli on 17/3/10.
- */
+@Getter
 public enum ExecutorRouteStrategyEnum {
 
     FIRST(I18nUtil.getString("jobconf_route_first"), new ExecutorRouteFirst()),
@@ -24,15 +23,8 @@ public enum ExecutorRouteStrategyEnum {
         this.router = router;
     }
 
-    private String title;
-    private ExecutorRouter router;
-
-    public String getTitle() {
-        return title;
-    }
-    public ExecutorRouter getRouter() {
-        return router;
-    }
+    private final String title;
+    private final ExecutorRouter router;
 
     public static ExecutorRouteStrategyEnum match(String name, ExecutorRouteStrategyEnum defaultItem){
         if (name != null) {

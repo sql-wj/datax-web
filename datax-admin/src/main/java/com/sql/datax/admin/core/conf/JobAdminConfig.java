@@ -2,6 +2,8 @@ package com.sql.datax.admin.core.conf;
 
 import com.sql.datax.admin.core.scheduler.JobScheduler;
 import com.sql.datax.admin.mapper.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,19 +15,11 @@ import javax.sql.DataSource;
 
 /**
  * xxl-job config
- *
- * @author xuxueli 2017-04-28
  */
-
 @Component
 public class JobAdminConfig implements InitializingBean, DisposableBean {
-
+    @Getter
     private static JobAdminConfig adminConfig = null;
-
-    public static JobAdminConfig getAdminConfig() {
-        return adminConfig;
-    }
-
 
     // ---------------------- XxlJobScheduler ----------------------
 
@@ -44,16 +38,18 @@ public class JobAdminConfig implements InitializingBean, DisposableBean {
         xxlJobScheduler.destroy();
     }
 
-
     // ---------------------- XxlJobScheduler ----------------------
 
     // conf
+    @Getter
     @Value("${datax.job.i18n}")
     private String i18n;
 
+    @Getter
     @Value("${datax.job.accessToken}")
     private String accessToken;
 
+    @Getter
     @Value("${spring.mail.username}")
     private String emailUserName;
 
@@ -66,39 +62,37 @@ public class JobAdminConfig implements InitializingBean, DisposableBean {
     @Value("${datax.job.logretentiondays}")
     private int logretentiondays;
 
+    @Setter
+    @Getter
     @Value("${datasource.aes.key}")
     private String dataSourceAESKey;
 
     // dao, service
 
+    @Getter
     @Resource
     private JobLogMapper jobLogMapper;
+    @Getter
     @Resource
     private JobInfoMapper jobInfoMapper;
+    @Getter
     @Resource
     private JobRegistryMapper jobRegistryMapper;
+    @Getter
     @Resource
     private JobGroupMapper jobGroupMapper;
+    @Getter
     @Resource
     private JobLogReportMapper jobLogReportMapper;
+    @Getter
     @Resource
     private JavaMailSender mailSender;
+    @Getter
     @Resource
     private DataSource dataSource;
+    @Getter
     @Resource
     private JobDatasourceMapper jobDatasourceMapper;
-
-    public String getI18n() {
-        return i18n;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public String getEmailUserName() {
-        return emailUserName;
-    }
 
     public int getTriggerPoolFastMax() {
         return triggerPoolFastMax < 200 ? 200 : triggerPoolFastMax;
@@ -112,43 +106,4 @@ public class JobAdminConfig implements InitializingBean, DisposableBean {
         return logretentiondays < 7 ? -1 : logretentiondays;
     }
 
-    public JobLogMapper getJobLogMapper() {
-        return jobLogMapper;
-    }
-
-    public JobInfoMapper getJobInfoMapper() {
-        return jobInfoMapper;
-    }
-
-    public JobRegistryMapper getJobRegistryMapper() {
-        return jobRegistryMapper;
-    }
-
-    public JobGroupMapper getJobGroupMapper() {
-        return jobGroupMapper;
-    }
-
-    public JobLogReportMapper getJobLogReportMapper() {
-        return jobLogReportMapper;
-    }
-
-    public JavaMailSender getMailSender() {
-        return mailSender;
-    }
-
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
-    public JobDatasourceMapper getJobDatasourceMapper() {
-        return jobDatasourceMapper;
-    }
-
-    public String getDataSourceAESKey() {
-        return dataSourceAESKey;
-    }
-
-    public void setDataSourceAESKey(String dataSourceAESKey) {
-        this.dataSourceAESKey = dataSourceAESKey;
-    }
 }

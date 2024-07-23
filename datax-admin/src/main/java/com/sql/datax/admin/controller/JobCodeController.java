@@ -18,9 +18,6 @@ import java.util.Date;
 
 import static com.sql.datatx.core.biz.model.ReturnT.FAIL_CODE;
 
-/**
- * Created by jingwk on 2019/11/17
- */
 @RestController
 @RequestMapping("/jobcode")
 @Api(tags = "任务状态接口")
@@ -30,7 +27,6 @@ public class JobCodeController {
     private JobInfoMapper jobInfoMapper;
     @Resource
     private JobLogGlueMapper jobLogGlueMapper;
-
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation("保存任务状态")

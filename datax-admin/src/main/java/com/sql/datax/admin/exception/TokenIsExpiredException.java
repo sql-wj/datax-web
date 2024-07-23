@@ -1,11 +1,9 @@
 package com.sql.datax.admin.exception;
 
 /**
- * @description: 自定义异常
- * @author: jingwk
- * @date: 2019/11/17 17:21
+ * 自定义异常
  */
-public class TokenIsExpiredException extends Exception{
+public class TokenIsExpiredException extends Exception {
     public TokenIsExpiredException() {
     }
 

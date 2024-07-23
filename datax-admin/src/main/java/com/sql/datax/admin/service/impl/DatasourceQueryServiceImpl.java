@@ -5,28 +5,26 @@ import com.google.common.collect.Lists;
 import com.sql.datax.admin.entity.JobDatasource;
 import com.sql.datax.admin.service.DatasourceQueryService;
 import com.sql.datax.admin.service.JobDatasourceService;
-import com.sql.datax.admin.tool.query.*;
+import com.sql.datax.admin.tool.query.BaseQueryTool;
+import com.sql.datax.admin.tool.query.HBaseQueryTool;
+import com.sql.datax.admin.tool.query.MongoDBQueryTool;
+import com.sql.datax.admin.tool.query.QueryToolFactory;
 import com.sql.datax.admin.util.JdbcConstants;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
 /**
  * datasource query
- *
- * @author zhouhongfa@gz-yibo.com
- * @ClassName JdbcDatasourceQueryServiceImpl
- * @Version 1.0
- * @since 2019/7/31 20:51
  */
 @Service
 public class DatasourceQueryServiceImpl implements DatasourceQueryService {
 
-    @Autowired
+    @Resource
     private JobDatasourceService jobDatasourceService;
 
     @Override
@@ -35,7 +33,6 @@ public class DatasourceQueryServiceImpl implements DatasourceQueryService {
         JobDatasource datasource = jobDatasourceService.getById(id);
         return new MongoDBQueryTool(datasource).getDBNames();
     }
-
 
     @Override
     public List<String> getTables(Long id, String tableSchema) throws IOException {
@@ -51,9 +48,9 @@ public class DatasourceQueryServiceImpl implements DatasourceQueryService {
             return new MongoDBQueryTool(datasource).getCollectionNames(datasource.getDatabaseName());
         } else {
             BaseQueryTool qTool = QueryToolFactory.getByDbType(datasource);
-            if(StringUtils.isBlank(tableSchema)){
+            if (StringUtils.isBlank(tableSchema)) {
                 return qTool.getTableNames();
-            }else{
+            } else {
                 return qTool.getTableNames(tableSchema);
             }
         }
@@ -81,7 +78,6 @@ public class DatasourceQueryServiceImpl implements DatasourceQueryService {
         }
         return new MongoDBQueryTool(datasource).getCollectionNames(dbName);
     }
-
 
     @Override
     public List<String> getColumns(Long id, String tableName) throws IOException {

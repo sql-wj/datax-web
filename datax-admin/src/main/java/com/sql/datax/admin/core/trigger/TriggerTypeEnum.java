@@ -1,12 +1,12 @@
 package com.sql.datax.admin.core.trigger;
 
 import com.sql.datax.admin.core.util.I18nUtil;
+import lombok.Getter;
 
 /**
  * trigger type enum
- *
- * @author xuxueli 2018-09-16 04:56:41
  */
+@Getter
 public enum TriggerTypeEnum {
 
     MANUAL(I18nUtil.getString("jobconf_trigger_type_manual")),
@@ -15,12 +15,10 @@ public enum TriggerTypeEnum {
     PARENT(I18nUtil.getString("jobconf_trigger_type_parent")),
     API(I18nUtil.getString("jobconf_trigger_type_api"));
 
-    private TriggerTypeEnum(String title){
+    TriggerTypeEnum(String title) {
         this.title = title;
     }
-    private String title;
-    public String getTitle() {
-        return title;
-    }
+
+    private final String title;
 
 }

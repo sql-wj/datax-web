@@ -23,14 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by jingwk on 2019/11/17
- */
 @RestController
 @RequestMapping("/api/log")
 @Api(tags = "任务运行日志接口")
 public class JobLogController {
-    private static Logger logger = LoggerFactory.getLogger(JobLogController.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobLogController.class);
 
     @Resource
     public JobInfoMapper jobInfoMapper;
@@ -43,14 +40,13 @@ public class JobLogController {
             @RequestParam(required = false, defaultValue = "0") int current,
             @RequestParam(required = false, defaultValue = "10") int size,
             int jobGroup, int jobId, int logStatus, String filterTime) {
-
         // valid permission
         //JobInfoController.validPermission(request, jobGroup);	// 仅管理员支持查询全部；普通用户仅支持查询有权限的 jobGroup
 
         // parse param
         Date triggerTimeStart = null;
         Date triggerTimeEnd = null;
-        if (filterTime != null && filterTime.trim().length() > 0) {
+        if (filterTime != null && !filterTime.trim().isEmpty()) {
             String[] temp = filterTime.split(" - ");
             if (temp.length == 2) {
                 triggerTimeStart = DateUtil.parseDateTime(temp[0]);
@@ -129,7 +125,6 @@ public class JobLogController {
     @PostMapping("/clearLog")
     @ApiOperation("清理日志")
     public ReturnT<String> clearLog(int jobGroup, int jobId, int type) {
-
         Date clearBeforeTime = null;
         int clearBeforeNum = 0;
         if (type == 1) {
@@ -157,10 +152,10 @@ public class JobLogController {
         List<Long> logIds;
         do {
             logIds = jobLogMapper.findClearLogIds(jobGroup, jobId, clearBeforeTime, clearBeforeNum, 1000);
-            if (logIds != null && logIds.size() > 0) {
+            if (logIds != null && !logIds.isEmpty()) {
                 jobLogMapper.clearLog(logIds);
             }
-        } while (logIds != null && logIds.size() > 0);
+        } while (logIds != null && !logIds.isEmpty());
 
         return ReturnT.SUCCESS;
     }

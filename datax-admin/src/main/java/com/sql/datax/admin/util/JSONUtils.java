@@ -5,11 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
  * DataX JSON 用户名密码解密
- *
- * @author zhouhongfa@gz-yibo.com
- * @ClassName JSONUtils
- * @Version 1.0
- * @since 2019/7/31 14:54
  */
 public class JSONUtils {
 
@@ -22,12 +17,6 @@ public class JSONUtils {
      */
     public static Integer encrypt = 1;
 
-    /**
-     * @param content
-     * @param key
-     * @param changeType 0加密 or 1解密
-     * @return
-     */
     public static JSONObject change(String content, String key, Integer changeType) {
         JSONObject keyObj = JSONObject.parseObject(JSONObject.parseObject(content).getString(key));
         JSONObject params = JSONObject.parseObject(keyObj.getString("parameter"));
@@ -50,7 +39,7 @@ public class JSONUtils {
     }
 
     /**
-     * @param jsonStr
+     * @param jsonStr    json串
      * @param changeType 0加密 or 1解密
      * @return jsonStr
      */

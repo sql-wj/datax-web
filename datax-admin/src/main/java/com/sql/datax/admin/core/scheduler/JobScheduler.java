@@ -16,13 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * @author xuxueli 2018-10-28 00:18:17
- */
-
 public class JobScheduler {
     private static final Logger logger = LoggerFactory.getLogger(JobScheduler.class);
-
 
     public void init() throws Exception {
         // init i18n
@@ -75,11 +70,11 @@ public class JobScheduler {
     }
 
     // ---------------------- executor-client ----------------------
-    private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<>();
 
     public static ExecutorBiz getExecutorBiz(String address) throws Exception {
         // valid
-        if (address == null || address.trim().length() == 0) {
+        if (address == null || address.trim().isEmpty()) {
             return null;
         }
 

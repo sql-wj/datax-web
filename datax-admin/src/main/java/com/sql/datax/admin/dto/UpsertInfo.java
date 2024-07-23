@@ -2,9 +2,6 @@ package com.sql.datax.admin.dto;
 
 import lombok.Data;
 
-/**
- * Created by mac on 2020/3/16.
- */
 @Data
 public class UpsertInfo {
     /**

@@ -2,9 +2,6 @@ package com.sql.datax.admin.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 
-/**
- * @author xuxueli 2019-05-04 16:43:12
- */
 public class JobRole {
 
     private int id;

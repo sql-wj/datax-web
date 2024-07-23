@@ -7,11 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * job info
- *
- * @author xuxueli 2016-1-12 18:03:45
  */
 @Mapper
 public interface JobInfoMapper {
@@ -54,7 +51,7 @@ public interface JobInfoMapper {
 
     int incrementTimeUpdate(@Param("id") int id, @Param("incStartTime") Date incStartTime);
 
-	public int updateLastHandleCode(@Param("id") int id,@Param("lastHandleCode")int lastHandleCode);
+    public int updateLastHandleCode(@Param("id") int id, @Param("lastHandleCode") int lastHandleCode);
 
-    void incrementIdUpdate(@Param("id") int id, @Param("incStartId")Long incStartId);
+    void incrementIdUpdate(@Param("id") int id, @Param("incStartId") Long incStartId);
 }

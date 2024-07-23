@@ -28,33 +28,23 @@ import java.util.Map;
 
 /**
  * 抽象查询工具
- *
- * @author zhouhongfa@gz-yibo.com
- * @ClassName BaseQueryTool
- * @Version 1.0
- * @since 2019/7/18 9:22
  */
 public abstract class BaseQueryTool implements QueryToolInterface {
-
     protected static final Logger logger = LoggerFactory.getLogger(BaseQueryTool.class);
     /**
      * 用于获取查询语句
      */
-    private DatabaseInterface sqlBuilder;
-
-    private DataSource datasource;
+    private final DatabaseInterface sqlBuilder;
 
     private Connection connection;
     /**
      * 当前数据库名
      */
-    private String currentSchema;
-    private String currentDatabase;
+    private final String currentSchema;
+    private final String currentDatabase;
 
     /**
      * 构造方法
-     *
-     * @param jobDatasource
      */
     BaseQueryTool(JobDatasource jobDatasource) throws SQLException {
         if (LocalCacheUtil.get(jobDatasource.getDatasourceName()) == null) {
@@ -84,8 +74,7 @@ public abstract class BaseQueryTool implements QueryToolInterface {
         dataSource.setMaximumPoolSize(1);
         dataSource.setMinimumIdle(0);
         dataSource.setConnectionTimeout(30000);
-        this.datasource = dataSource;
-        this.connection = this.datasource.getConnection();
+        this.connection = ((DataSource) dataSource).getConnection();
     }
 
     //根据connection获取schema
@@ -125,7 +114,6 @@ public abstract class BaseQueryTool implements QueryToolInterface {
         tableInfo.setName(StrUtil.toString(tValues.get(0)));
         tableInfo.setComment(StrUtil.toString(tValues.get(1)));
 
-
         //获取所有字段
         List<ColumnInfo> fullColumn = getColumns(tableName);
         tableInfo.setColumns(fullColumn);
@@ -135,13 +123,7 @@ public abstract class BaseQueryTool implements QueryToolInterface {
         logger.info("主键列为：{}", primaryKeys);
 
         //设置ifPrimaryKey标志
-        fullColumn.forEach(e -> {
-            if (primaryKeys.contains(e.getName())) {
-                e.setIfPrimaryKey(true);
-            } else {
-                e.setIfPrimaryKey(false);
-            }
-        });
+        fullColumn.forEach(e -> e.setIfPrimaryKey(primaryKeys.contains(e.getName())));
         return tableInfo;
     }
 

@@ -3,9 +3,6 @@ package com.sql.datax.admin.entity;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.util.StringUtils;
 
-/**
- * @author xuxueli 2019-05-04 16:43:12
- */
 public class JobUser {
 
     private int id;

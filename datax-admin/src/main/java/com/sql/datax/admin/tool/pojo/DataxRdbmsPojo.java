@@ -7,11 +7,6 @@ import java.util.List;
 
 /**
  * 用于传参，构建json
- *
- * @author jingwk
- * @ClassName DataxRdbmsPojo
- * @Version 2.0
- * @since 2020/01/11 15:19
  */
 @Data
 public class DataxRdbmsPojo {

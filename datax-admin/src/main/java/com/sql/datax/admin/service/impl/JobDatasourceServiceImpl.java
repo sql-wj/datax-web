@@ -17,9 +17,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by jingwk on 2020/01/30
- */
 @Service
 @Transactional(readOnly = true)
 public class JobDatasourceServiceImpl extends ServiceImpl<JobDatasourceMapper, JobDatasource> implements JobDatasourceService {
@@ -28,7 +25,7 @@ public class JobDatasourceServiceImpl extends ServiceImpl<JobDatasourceMapper, J
     private JobDatasourceMapper datasourceMapper;
 
     @Override
-    public Boolean  dataSourceTest(JobDatasource jobDatasource) throws IOException {
+    public Boolean dataSourceTest(JobDatasource jobDatasource) throws IOException {
         if (JdbcConstants.HBASE.equals(jobDatasource.getDatasource())) {
             return new HBaseQueryTool(jobDatasource).dataSourceTest();
         }

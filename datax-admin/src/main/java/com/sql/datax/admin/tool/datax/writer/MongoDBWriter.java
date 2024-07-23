@@ -6,8 +6,6 @@ import com.sql.datax.admin.dto.UpsertInfo;
 import com.sql.datax.admin.entity.JobDatasource;
 import com.sql.datax.admin.tool.pojo.DataxMongoDBPojo;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class MongoDBWriter extends BaseWriterPlugin implements DataxWriterInterface {

@@ -10,7 +10,7 @@ public class DateFormatUtils {
     public static final String TIME_FORMAT = "HH:mm:ss";
     public static final String TIMESTAMP = "Timestamp";
 
-    public static final List<String> formatList() {
+    public static List<String> formatList() {
         List<String> formatList = new ArrayList<>();
         formatList.add(DATE_FORMAT);
         formatList.add(TIME_FORMAT);

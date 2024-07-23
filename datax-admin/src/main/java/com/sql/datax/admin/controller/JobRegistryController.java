@@ -11,22 +11,19 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
-/**
- * Created by jingwk on 2019/11/17
- */
 @RestController
 @RequestMapping("/api/jobRegistry")
 @Api(tags = "执行器资源监控")
 public class JobRegistryController extends BaseController {
 
-	@Autowired
+	@Resource
 	private JobRegistryService jobRegistryService;
 
 	/**
@@ -50,9 +47,6 @@ public class JobRegistryController extends BaseController {
 
 	/**
 	 * 自定义查询组装
-	 *
-	 * @param map
-	 * @return
 	 */
 	protected QueryWrapper<JobRegistry> pageQueryWrapperCustom(Map<String, Object> map) {
 		// mybatis plus 分页相关的参数
@@ -76,13 +70,11 @@ public class JobRegistryController extends BaseController {
 
 		//遍历进行字段查询条件组装
 		columnQueryMap.forEach((k, v) -> {
-			switch (k) {
-				case "datasourceName":
-					queryWrapper.like(StrUtil.toUnderlineCase(k), v);
-					break;
-				default:
-					queryWrapper.eq(StrUtil.toUnderlineCase(k), v);
-			}
+            if (k.equals("datasourceName")) {
+                queryWrapper.like(StrUtil.toUnderlineCase(k), v);
+            } else {
+                queryWrapper.eq(StrUtil.toUnderlineCase(k), v);
+            }
 		});
 
 		return queryWrapper;

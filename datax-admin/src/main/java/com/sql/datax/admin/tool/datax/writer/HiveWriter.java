@@ -7,17 +7,12 @@ import java.util.Map;
 
 /**
  * hive writer构建类
- *
- * @author jingwk
- * @version 2.0
- * @since 2020/01/05
  */
 public class HiveWriter extends BaseWriterPlugin implements DataxWriterInterface {
     @Override
     public String getName() {
         return "hdfswriter";
     }
-
 
     @Override
     public Map<String, Object> sample() {

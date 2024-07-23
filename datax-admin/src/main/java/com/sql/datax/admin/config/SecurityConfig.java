@@ -1,11 +1,9 @@
 package com.sql.datax.admin.config;
 
-
 import com.sql.datatx.core.util.Constants;
 import com.sql.datax.admin.filter.JWTAuthenticationFilter;
 import com.sql.datax.admin.filter.JWTAuthorizationFilter;
 import com.sql.datax.admin.service.impl.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,22 +17,19 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/**
- * Created by jingwk on 2019/11/17
- */
+import javax.annotation.Resource;
+
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
+    @Resource
     private UserDetailsService userDetailsService;
 
     @Bean
-    UserDetailsService customUserService(){ //注册UserDetailsService 的bean
+    UserDetailsService customUserService() { //注册UserDetailsService 的bean
         return new UserDetailsServiceImpl();
     }
-
-
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -50,9 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/static/**","/index.html","/favicon.ico","/avatar.jpg").permitAll()
-                .antMatchers("/api/callback","/api/processCallback","/api/registry","/api/registryRemove").permitAll()
-                .antMatchers("/doc.html","/swagger-resources/**","/webjars/**","/*/api-docs").anonymous()
+                .antMatchers("/static/**", "/index.html", "/favicon.ico", "/avatar.jpg").permitAll()
+                .antMatchers("/api/callback", "/api/processCallback", "/api/registry", "/api/registryRemove").permitAll()
+                .antMatchers("/doc.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))

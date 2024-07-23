@@ -17,9 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
-/**
- * Created by jingwk on 2019/11/17
- */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
@@ -57,8 +54,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         boolean expiration = JwtTokenUtils.isExpiration(token);
         if (expiration) {
             throw new TokenIsExpiredException("登录时间过长，请退出重新登录");
-        }
-        else {
+        } else {
             String username = JwtTokenUtils.getUsername(token);
             String role = JwtTokenUtils.getUserRole(token);
             if (username != null) {

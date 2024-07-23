@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * MybatisPlus配置类 Spring boot方式
- *
- * @author huzekang
  */
 @EnableTransactionManagement
 @Configuration
@@ -23,7 +21,6 @@ public class MybatisPlusConfig {
      */
     @Bean
     public PaginationInterceptor paginationInterceptor() {
-
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
         return paginationInterceptor.setOverflow(true);
     }
@@ -32,13 +29,10 @@ public class MybatisPlusConfig {
      * MyBatisPlus逻辑删除 ，需要在 yml 中配置开启
      * 3.0.7.1版本的LogicSqlInjector里面什么都没做只是 extends DefaultSqlInjector
      * 以后版本直接去的了LogicSqlInjector
-     *
-     * @return
      */
     @Bean
     public ISqlInjector sqlInjector() {
         return new DefaultSqlInjector();
     }
-
 
 }

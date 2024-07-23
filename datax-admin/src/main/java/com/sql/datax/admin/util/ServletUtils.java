@@ -1,8 +1,8 @@
 package com.sql.datax.admin.util;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -11,16 +11,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 
 /**
  * Http与Servlet工具类
- *
- * @author zhouhongfa@gz-yibo.com
- * @version 1.0
- * @since 2019/6/15
  */
+@Slf4j
 public class ServletUtils {
 
     public static final String DEFAULT_PARAMS_PARAM = "params";        // 登录扩展参数（JSON字符串）优先级高于扩展参数前缀
@@ -37,12 +35,9 @@ public class ServletUtils {
      * </listener-class></listener>
      */
     public static HttpServletRequest getRequest() {
-        HttpServletRequest request = null;
+        HttpServletRequest request;
         try {
             request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-            if (request == null) {
-                return null;
-            }
             return request;
         } catch (Exception e) {
             return null;
@@ -70,18 +65,16 @@ public class ServletUtils {
 
     /***
      * 获取 request 中 json 字符串的内容
-     * @param request
      * @return : <code>byte[]</code>
-     * @throws IOException
      */
     public static String getRequestJsonString(HttpServletRequest request) throws IOException {
         String submitMehtod = request.getMethod();
         // GET
         if (submitMehtod.equals("GET")) {
             if (StrUtil.isNotEmpty(request.getQueryString())) {
-                return new String(request.getQueryString().getBytes("iso-8859-1"), "utf-8").replaceAll("%22", "\"");
+                return new String(request.getQueryString().getBytes(StandardCharsets.ISO_8859_1), "utf-8").replaceAll("%22", "\"");
             } else {
-                return new String("".getBytes("iso-8859-1"), "utf-8").replaceAll("%22", "\"");
+                return new String("".getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8).replaceAll("%22", "\"");
             }
             // POST
         } else {
@@ -94,17 +87,13 @@ public class ServletUtils {
      * <pre>
      * 举例：
      * </pre>
-     *
-     * @param request
-     * @return
-     * @throws IOException
      */
     public static byte[] getRequestPostBytes(HttpServletRequest request) throws IOException {
         int contentLength = request.getContentLength();
         if (contentLength < 0) {
             return null;
         }
-        byte buffer[] = new byte[contentLength];
+        byte[] buffer = new byte[contentLength];
         for (int i = 0; i < contentLength; ) {
             int readlen = request.getInputStream().read(buffer, i, contentLength - i);
             if (readlen == -1) {
@@ -120,34 +109,28 @@ public class ServletUtils {
      * <pre>
      * 举例：
      * </pre>
-     *
-     * @param request
-     * @return
-     * @throws IOException
      */
     public static String getRequestPostStr(HttpServletRequest request) throws IOException {
-        byte buffer[] = getRequestPostBytes(request);
+        byte[] buffer = getRequestPostBytes(request);
         String charEncoding = request.getCharacterEncoding();
         if (charEncoding == null) {
-            charEncoding = "UTF-8";
+            charEncoding = StandardCharsets.UTF_8.name();
         }
+        assert buffer != null;
         return new String(buffer, charEncoding);
     }
 
     /**
      * 是否是Ajax异步请求
-     *
-     * @param request
      */
     public static boolean isAjaxRequest(HttpServletRequest request) {
-
         String accept = request.getHeader("accept");
-        if (accept != null && accept.indexOf("application/json") != -1) {
+        if (accept != null && accept.contains("application/json")) {
             return true;
         }
 
         String xRequestedWith = request.getHeader("X-Requested-With");
-        if (xRequestedWith != null && xRequestedWith.indexOf("XMLHttpRequest") != -1) {
+        if (xRequestedWith != null && xRequestedWith.contains("XMLHttpRequest")) {
             return true;
         }
 
@@ -157,11 +140,7 @@ public class ServletUtils {
         }
 
         String ajax = request.getParameter("__ajax");
-        if (StrUtil.containsAnyIgnoreCase(ajax, "json", "xml")) {
-            return true;
-        }
-
-        return false;
+        return StrUtil.containsAnyIgnoreCase(ajax, "json", "xml");
     }
 
     /**
@@ -184,12 +163,12 @@ public class ServletUtils {
      */
     public static String renderString(HttpServletResponse response, String string, String type) {
         try {
-//			response.reset(); // 先注释掉，否则以前设置的Header会被清理掉，如ajax登录设置记住我Cookie
+            //response.reset(); // 先注释掉，否则以前设置的Header会被清理掉，如ajax登录设置记住我Cookie
             response.setContentType(type == null ? "application/json" : type);
             response.setCharacterEncoding("utf-8");
             response.getWriter().print(string);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("将字符串渲染到客户端出错", e);
         }
         return null;
     }
@@ -229,14 +208,14 @@ public class ServletUtils {
     @SuppressWarnings("rawtypes")
     public static Map<String, Object> getParametersStartingWith(ServletRequest request, String prefix) {
         Enumeration paramNames = request.getParameterNames();
-        Map<String, Object> params = new TreeMap<String, Object>();
+        Map<String, Object> params = new TreeMap<>();
         String pre = prefix;
         if (pre == null) {
             pre = "";
         }
         while (paramNames != null && paramNames.hasMoreElements()) {
             String paramName = (String) paramNames.nextElement();
-            if ("".equals(pre) || paramName.startsWith(pre)) {
+            if (pre.isEmpty() || paramName.startsWith(pre)) {
                 String unprefixed = paramName.substring(pre.length());
                 String[] values = request.getParameterValues(paramName);
                 if (values == null || values.length == 0) {
@@ -279,12 +258,12 @@ public class ServletUtils {
      * @return 返回Map对象
      */
     public static Map<String, Object> getExtParams(ServletRequest request) {
-        Map<String, Object> paramMap = null;
+        Map paramMap;
         String params = StrUtil.trim(request.getParameter(DEFAULT_PARAMS_PARAM));
         if (StrUtil.isNotBlank(params) && StrUtil.startWith(params, "{")) {
-            paramMap = (Map) JSONUtil.parseObj(params);
+            paramMap = JSONUtil.parseObj(params);
         } else {
-            paramMap = getParametersStartingWith(ServletUtils.getRequest(), DEFAULT_PARAM_PREFIX_PARAM);
+            paramMap = getParametersStartingWith(Objects.requireNonNull(ServletUtils.getRequest()), DEFAULT_PARAM_PREFIX_PARAM);
         }
         return paramMap;
     }

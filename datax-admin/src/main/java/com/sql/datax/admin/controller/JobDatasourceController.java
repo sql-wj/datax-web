@@ -1,7 +1,6 @@
 package com.sql.datax.admin.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.sql.datax.admin.core.util.LocalCacheUtil;
 import com.sql.datax.admin.entity.JobDatasource;
@@ -10,19 +9,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * jdbc数据源配置控制器层
- *
- * @author zhouhongfa@gz-yibo.com
- * @version v1.0
- * @since 2019-07-30
  */
 @RestController
 @RequestMapping("/api/jobJdbcDatasource")
@@ -31,7 +26,7 @@ public class JobDatasourceController extends BaseController {
     /**
      * 服务对象
      */
-    @Autowired
+    @Resource
     private JobDatasourceService jobJdbcDatasourceService;
 
     /**
@@ -48,7 +43,7 @@ public class JobDatasourceController extends BaseController {
                     @ApiImplicitParam(paramType = "query", dataType = "String", name = "ascs", value = "升序字段，多个用逗号分隔"),
                     @ApiImplicitParam(paramType = "query", dataType = "String", name = "descs", value = "降序字段，多个用逗号分隔")
             })
-    public R<IPage<JobDatasource>> selectAll() {
+    public R selectAll() {
         BaseForm form = new BaseForm();
         QueryWrapper<JobDatasource> query = (QueryWrapper<JobDatasource>) form.pageQueryWrapperCustom(form.getParameters(), new QueryWrapper<JobDatasource>());
         return success(jobJdbcDatasourceService.page(form.getPlusPagingQueryEntity(), query));
@@ -56,7 +51,6 @@ public class JobDatasourceController extends BaseController {
 
     /**
      * 获取所有数据源
-     * @return
      */
     @ApiOperation("获取所有数据源")
     @GetMapping("/all")
@@ -122,12 +116,10 @@ public class JobDatasourceController extends BaseController {
 
     /**
      * 测试数据源
-     * @param jobJdbcDatasource
-     * @return
      */
     @PostMapping("/test")
     @ApiOperation("测试数据")
-    public R<Boolean> dataSourceTest (@RequestBody JobDatasource jobJdbcDatasource) throws IOException {
+    public R<Boolean> dataSourceTest(@RequestBody JobDatasource jobJdbcDatasource) throws IOException {
         return success(jobJdbcDatasourceService.dataSourceTest(jobJdbcDatasource));
     }
 }

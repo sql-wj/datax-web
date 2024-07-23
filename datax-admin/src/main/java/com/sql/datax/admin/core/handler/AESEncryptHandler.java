@@ -11,19 +11,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * @author water
- * @date 20-03-17  下午5:38
- */
 @MappedTypes({String.class})
 public class AESEncryptHandler extends BaseTypeHandler<String> {
 
-
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
-        if(StringUtils.isNotBlank(parameter)){
+        if (StringUtils.isNotBlank(parameter)) {
             ps.setString(i, AESUtil.encrypt(parameter));
-        }else{
+        } else {
             ps.setString(i, null);
         }
     }

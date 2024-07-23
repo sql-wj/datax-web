@@ -4,11 +4,6 @@ import java.util.Map;
 
 /**
  * 构建 com.sql.datax json的基础接口
- *
- * @author jingwk
- * @ClassName DataxJsonHelper
- * @Version 2.1.1
- * @since 2020/03/14 12:24
  */
 public interface DataxJsonInterface {
 

@@ -28,21 +28,17 @@ import java.util.Date;
 
 /**
  * xxl-job trigger
- * Created by xuxueli on 17/7/13.
  */
 public class JobTrigger {
-    private static Logger logger = LoggerFactory.getLogger(JobTrigger.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobTrigger.class);
 
     /**
      * trigger job
      *
-     * @param jobId
-     * @param triggerType
-     * @param failRetryCount        >=0: use this param
-     *                              <0: use param from job info config
-     * @param executorShardingParam
-     * @param executorParam         null: use job param
-     *                              not null: cover job param
+     * @param failRetryCount >=0: use this param
+     *                       <0: use param from job info config
+     * @param executorParam  null: use job param
+     *                       not null: cover job param
      */
     public static void trigger(int jobId, TriggerTypeEnum triggerType, int failRetryCount, String executorShardingParam, String executorParam) {
         JobInfo jobInfo = JobAdminConfig.getAdminConfig().getJobInfoMapper().loadById(jobId);
@@ -67,8 +63,8 @@ public class JobTrigger {
             String[] shardingArr = executorShardingParam.split("/");
             if (shardingArr.length == 2 && isNumeric(shardingArr[0]) && isNumeric(shardingArr[1])) {
                 shardingParam = new int[2];
-                shardingParam[0] = Integer.valueOf(shardingArr[0]);
-                shardingParam[1] = Integer.valueOf(shardingArr[1]);
+                shardingParam[0] = Integer.parseInt(shardingArr[0]);
+                shardingParam[1] = Integer.parseInt(shardingArr[1]);
             }
         }
         if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST == ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null)
@@ -88,7 +84,7 @@ public class JobTrigger {
 
     private static boolean isNumeric(String str) {
         try {
-            int result = Integer.valueOf(str);
+            Integer.parseInt(str);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -96,12 +92,9 @@ public class JobTrigger {
     }
 
     /**
-     * @param group               job group, registry list may be empty
-     * @param jobInfo
-     * @param finalFailRetryCount
-     * @param triggerType
-     * @param index               sharding index
-     * @param total               sharding index
+     * @param group job group, registry list may be empty
+     * @param index sharding index
+     * @param total sharding index
      */
     private static void processTrigger(JobGroup group, JobInfo jobInfo, int finalFailRetryCount, TriggerTypeEnum triggerType, int index, int total) {
 
@@ -142,23 +135,21 @@ public class JobTrigger {
         triggerParam.setJobJson(jobInfo.getJobJson());
 
         //increment parameter
-        Integer incrementType = jobInfo.getIncrementType();
-        if (incrementType != null) {
-            triggerParam.setIncrementType(incrementType);
-            if (IncrementTypeEnum.ID.getCode() == incrementType) {
-                long maxId = getMaxId(jobInfo);
-                jobLog.setMaxId(maxId);
-                triggerParam.setEndId(maxId);
-                triggerParam.setStartId(jobInfo.getIncStartId());
-            } else if (IncrementTypeEnum.TIME.getCode() == incrementType) {
-                triggerParam.setStartTime(jobInfo.getIncStartTime());
-                triggerParam.setTriggerTime(triggerTime);
-                triggerParam.setReplaceParamType(jobInfo.getReplaceParamType());
-            } else if (IncrementTypeEnum.PARTITION.getCode() == incrementType) {
-                triggerParam.setPartitionInfo(jobInfo.getPartitionInfo());
-            }
-            triggerParam.setReplaceParam(jobInfo.getReplaceParam());
+        int incrementType = jobInfo.getIncrementType();
+        triggerParam.setIncrementType(incrementType);
+        if (IncrementTypeEnum.ID.getCode() == incrementType) {
+            long maxId = getMaxId(jobInfo);
+            jobLog.setMaxId(maxId);
+            triggerParam.setEndId(maxId);
+            triggerParam.setStartId(jobInfo.getIncStartId());
+        } else if (IncrementTypeEnum.TIME.getCode() == incrementType) {
+            triggerParam.setStartTime(jobInfo.getIncStartTime());
+            triggerParam.setTriggerTime(triggerTime);
+            triggerParam.setReplaceParamType(jobInfo.getReplaceParamType());
+        } else if (IncrementTypeEnum.PARTITION.getCode() == incrementType) {
+            triggerParam.setPartitionInfo(jobInfo.getPartitionInfo());
         }
+        triggerParam.setReplaceParam(jobInfo.getReplaceParam());
         //jvm parameter
         triggerParam.setJvmParam(jobInfo.getJvmParam());
 
@@ -179,19 +170,19 @@ public class JobTrigger {
                 }
             }
         } else {
-            routeAddressResult = new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobconf_trigger_address_empty"));
+            routeAddressResult = new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobconf_trigger_address_empty"));
         }
 
         // 4、trigger remote executor
-        ReturnT<String> triggerResult = null;
+        ReturnT<String> triggerResult;
         if (address != null) {
             triggerResult = runExecutor(triggerParam, address);
         } else {
-            triggerResult = new ReturnT<String>(ReturnT.FAIL_CODE, null);
+            triggerResult = new ReturnT<>(ReturnT.FAIL_CODE, null);
         }
 
         // 5、collection trigger info
-        StringBuffer triggerMsgSb = new StringBuffer();
+        StringBuilder triggerMsgSb = new StringBuilder();
         triggerMsgSb.append(I18nUtil.getString("jobconf_trigger_type")).append("：").append(triggerType.getTitle());
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobconf_trigger_admin_adress")).append("：").append(IpUtil.getIp());
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobconf_trigger_exe_regtype")).append("：")
@@ -199,13 +190,13 @@ public class JobTrigger {
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobconf_trigger_exe_regaddress")).append("：").append(group.getRegistryList());
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobinfo_field_executorRouteStrategy")).append("：").append(executorRouteStrategyEnum.getTitle());
         if (shardingParam != null) {
-            triggerMsgSb.append("(" + shardingParam + ")");
+            triggerMsgSb.append("(").append(shardingParam).append(")");
         }
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobinfo_field_executorBlockStrategy")).append("：").append(blockStrategy.getTitle());
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobinfo_field_timeout")).append("：").append(jobInfo.getExecutorTimeout());
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobinfo_field_executorFailRetryCount")).append("：").append(finalFailRetryCount);
 
-        triggerMsgSb.append("<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>>" + I18nUtil.getString("jobconf_trigger_run") + "<<<<<<<<<<< </span><br>")
+        triggerMsgSb.append("<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>>").append(I18nUtil.getString("jobconf_trigger_run")).append("<<<<<<<<<<< </span><br>")
                 .append((routeAddressResult != null && routeAddressResult.getMsg() != null) ? routeAddressResult.getMsg() + "<br><br>" : "").append(triggerResult.getMsg() != null ? triggerResult.getMsg() : "");
 
         // 6、save log trigger-info
@@ -229,27 +220,22 @@ public class JobTrigger {
 
     /**
      * run executor
-     *
-     * @param triggerParam
-     * @param address
-     * @return
      */
     public static ReturnT<String> runExecutor(TriggerParam triggerParam, String address) {
-        ReturnT<String> runResult = null;
+        ReturnT<String> runResult;
         try {
             ExecutorBiz executorBiz = JobScheduler.getExecutorBiz(address);
             runResult = executorBiz.run(triggerParam);
         } catch (Exception e) {
             logger.error(">>>>>>>>>>> datax-web trigger error, please check if the executor[{}] is running.", address, e);
-            runResult = new ReturnT<String>(ReturnT.FAIL_CODE, ThrowableUtil.toString(e));
+            runResult = new ReturnT<>(ReturnT.FAIL_CODE, ThrowableUtil.toString(e));
         }
 
-        StringBuffer runResultSB = new StringBuffer(I18nUtil.getString("jobconf_trigger_run") + "：");
-        runResultSB.append("<br>address：").append(address);
-        runResultSB.append("<br>code：").append(runResult.getCode());
-        runResultSB.append("<br>msg：").append(runResult.getMsg());
+        String runResultSB = I18nUtil.getString("jobconf_trigger_run") + "：" + "<br>address：" + address +
+                "<br>code：" + runResult.getCode() +
+                "<br>msg：" + runResult.getMsg();
 
-        runResult.setMsg(runResultSB.toString());
+        runResult.setMsg(runResultSB);
         return runResult;
     }
 

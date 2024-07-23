@@ -1,14 +1,16 @@
 package com.sql.datax.admin.util;
 
+import lombok.Getter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+@Getter
 public class DataXException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private ErrorCode errorCode;
+    private final ErrorCode errorCode;
 
     public DataXException(ErrorCode errorCode, String errorMessage) {
         super(errorCode.toString() + " - " + errorMessage);
@@ -37,10 +39,6 @@ public class DataXException extends RuntimeException {
             return (DataXException) cause;
         }
         return new DataXException(errorCode, getMessage(cause), cause);
-    }
-
-    public ErrorCode getErrorCode() {
-        return this.errorCode;
     }
 
     private static String getMessage(Object obj) {

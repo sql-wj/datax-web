@@ -18,9 +18,6 @@ import java.util.Map;
 
 import static com.sql.datatx.core.biz.model.ReturnT.FAIL_CODE;
 
-/**
- * Created by jingwk on 2019/11/17
- */
 @RestController
 @RequestMapping("/api/user")
 @Api(tags = "用户信息接口")
@@ -28,17 +25,14 @@ public class UserController {
 
     @Resource
     private JobUserMapper jobUserMapper;
-
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
 
     @GetMapping("/pageList")
     @ApiOperation("用户列表")
     public ReturnT<Map<String, Object>> pageList(@RequestParam(required = false, defaultValue = "1") int current,
                                                  @RequestParam(required = false, defaultValue = "10") int size,
                                                  String username) {
-
         // page list
         List<JobUser> list = jobUserMapper.pageList((current - 1) * size, size, username);
         int recordsTotal = jobUserMapper.pageListCount((current - 1) * size, size, username);
@@ -132,7 +126,7 @@ public class UserController {
     @ApiOperation("修改密码")
     public ReturnT<String> updatePwd(@RequestBody JobUser jobUser) {
         String password = jobUser.getPassword();
-        if (password == null || password.trim().length() == 0) {
+        if (password == null || password.trim().isEmpty()) {
             return new ReturnT<>(ReturnT.FAIL.getCode(), "密码不可为空");
         }
         password = password.trim();

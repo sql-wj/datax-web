@@ -3,22 +3,20 @@ package com.sql.datax.admin.service.impl;
 import com.sql.datax.admin.entity.JobUser;
 import com.sql.datax.admin.entity.JwtUser;
 import com.sql.datax.admin.mapper.JobUserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * UserDetailsServiceImpl
- * @author jingwk
- * @since 2019-03-15
- * @version v2.1.1
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
+    @Resource
     private JobUserMapper jobUserMapper;
 
     @Override

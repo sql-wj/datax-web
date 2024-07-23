@@ -15,8 +15,6 @@ import java.util.Map;
 
 /**
  * index controller
- *
- * @author jingwk 2019-12-22 16:13:16
  */
 @RestController
 @Api(tags = "首页接口")
@@ -25,7 +23,6 @@ public class IndexController {
 
     @Resource
     private JobService jobService;
-
 
     @GetMapping("/index")
     @ApiOperation("监控图")

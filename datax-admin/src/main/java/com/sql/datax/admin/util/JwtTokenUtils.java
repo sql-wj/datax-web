@@ -1,6 +1,5 @@
 package com.sql.datax.admin.util;
 
-import com.alibaba.fastjson.JSON;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -13,9 +12,6 @@ import java.util.List;
 
 import static com.sql.datatx.core.util.Constants.SPLIT_COMMA;
 
-/**
- * Created by jingwk on 2019/12/01
- */
 public class JwtTokenUtils {
 
     public static final String TOKEN_HEADER = "Authorization";
@@ -56,7 +52,6 @@ public class JwtTokenUtils {
 
     // 从token中获取用户名
     public static Integer getUserId(String token) {
-        String s= JSON.toJSONString(getTokenBody(token).getSubject());
         List<String> userInfo = Arrays.asList(getTokenBody(token).getSubject().split(SPLIT_COMMA));
         return Integer.parseInt(userInfo.get(0));
     }

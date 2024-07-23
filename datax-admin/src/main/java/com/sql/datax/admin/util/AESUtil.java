@@ -16,15 +16,10 @@ import java.util.Base64;
 @Slf4j
 public class AESUtil {
 
-    private static String DEFAULT_CIPHER_ALGORITHM = "SHA1PRNG";
-    private static String KEY_ALGORITHM = "AES";
+    private static final String KEY_ALGORITHM = "AES";
 
     /**
      * 加密
-     *
-     * @param key
-     * @param messBytes
-     * @return
      */
     private static byte[] encrypt(Key key, byte[] messBytes) throws Exception {
         if (key != null) {
@@ -38,10 +33,6 @@ public class AESUtil {
 
     /**
      * AES（256）解密
-     *
-     * @param key
-     * @param cipherBytes
-     * @return
      */
     private static byte[] decrypt(Key key, byte[] cipherBytes) throws Exception {
         if (key != null) {
@@ -53,20 +44,16 @@ public class AESUtil {
         return null;
     }
 
-
     /**
      * 生成加密秘钥
-     *
-     * @return
-     * @throws NoSuchAlgorithmException
      */
     private static KeyGenerator getKeyGenerator() {
-
         String key = JobAdminConfig.getAdminConfig().getDataSourceAESKey();
 
         KeyGenerator keygen = null;
         try {
             keygen = KeyGenerator.getInstance(KEY_ALGORITHM);
+            String DEFAULT_CIPHER_ALGORITHM = "SHA1PRNG";
             SecureRandom secureRandom = SecureRandom.getInstance(DEFAULT_CIPHER_ALGORITHM);
             secureRandom.setSeed(key.getBytes());
             keygen.init(128, secureRandom);

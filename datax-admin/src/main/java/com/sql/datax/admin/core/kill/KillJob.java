@@ -10,15 +10,9 @@ import java.util.Date;
 
 /**
  * datax-job trigger
- * Created by jingwk on 2019/12/15.
  */
 public class KillJob {
 
-    /**
-     * @param logId
-     * @param address
-     * @param processId
-     */
     public static ReturnT<String> trigger(long logId, Date triggerTime, String address, String processId) {
         ReturnT<String> triggerResult;
         TriggerParam triggerParam = new TriggerParam();

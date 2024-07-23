@@ -27,14 +27,11 @@ import java.util.Map;
 
 import static com.sql.datatx.core.util.Constants.SPLIT_COMMA;
 
-/**
- * Created by jingwk on 2019/11/17
- */
 @Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private ThreadLocal<Integer> rememberMe = new ThreadLocal<>();
-    private AuthenticationManager authenticationManager;
+    private final ThreadLocal<Integer> rememberMe = new ThreadLocal<>();
+    private final AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -85,7 +82,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(JSON.toJSON(new ReturnT<>(ReturnT.FAIL_CODE,I18nUtil.getString("login_param_invalid"))).toString());
     }

@@ -17,11 +17,6 @@ import java.util.regex.Pattern;
 
 /**
  * datax writer base
- *
- * @author zhouhongfa@gz-yibo.com
- * @ClassName BaseWriterPlugin
- * @Version 1.0
- * @since 2019/8/2 16:28
  */
 public abstract class BaseWriterPlugin extends BaseDataxPlugin {
     @Override
@@ -30,7 +25,6 @@ public abstract class BaseWriterPlugin extends BaseDataxPlugin {
         writerObj.put("name", getName());
 
         Map<String, Object> parameterObj = Maps.newLinkedHashMap();
-//        parameterObj.put("writeMode", "insert");
         JobDatasource jobDatasource = plugin.getJobDatasource();
         parameterObj.put("username", jobDatasource.getJdbcUsername());
         parameterObj.put("password", jobDatasource.getJdbcPassword());

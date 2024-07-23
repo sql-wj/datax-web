@@ -1,9 +1,9 @@
 package com.sql.datax.admin.tool.query;
 
-
 import com.sql.datatx.core.util.Constants;
 import com.sql.datax.admin.core.util.LocalCacheUtil;
 import com.sql.datax.admin.entity.JobDatasource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
@@ -15,11 +15,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
+@Slf4j
 public class HBaseQueryTool {
-
-    private Configuration conf = HBaseConfiguration.create();
-    private ExecutorService pool = Executors.newScheduledThreadPool(2);
+    private final Configuration conf = HBaseConfiguration.create();
+    private final ExecutorService pool = Executors.newScheduledThreadPool(2);
     private Connection connection = null;
     private Admin admin;
     private Table table;
@@ -58,15 +57,12 @@ public class HBaseQueryTool {
                 table.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("关闭连接出错", e);
         }
     }
 
     /**
      * 测试是否连接成功
-     *
-     * @return
-     * @throws IOException
      */
     public boolean dataSourceTest() throws IOException {
         Admin admin = connection.getAdmin();
@@ -76,26 +72,19 @@ public class HBaseQueryTool {
 
     /**
      * 获取HBase表名称
-     *
-     * @return
-     * @throws IOException
      */
     public List<String> getTableNames() throws IOException {
         List<String> list = new ArrayList<>();
         Admin admin = connection.getAdmin();
         TableName[] names = admin.listTableNames();
-        for (int i = 0; i < names.length; i++) {
-            list.add(names[i].getNameAsString());
+        for (TableName name : names) {
+            list.add(name.getNameAsString());
         }
         return list;
     }
 
     /**
      * 通过表名查询所有l列祖和列
-     *
-     * @param tableName
-     * @return
-     * @throws IOException
      */
     public List<String> getColumns(String tableName) throws IOException {
         List<String> list = new ArrayList<>();

@@ -4,7 +4,6 @@ import com.google.common.collect.Multimap;
 import io.swagger.models.*;
 import io.swagger.models.parameters.Parameter;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Primary;
@@ -16,6 +15,7 @@ import springfox.documentation.service.Documentation;
 import springfox.documentation.service.ResourceListing;
 import springfox.documentation.swagger2.mappers.*;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 import static com.google.common.collect.Maps.newTreeMap;
@@ -28,35 +28,31 @@ import static com.google.common.collect.Maps.newTreeMap;
 @ConditionalOnWebApplication
 public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapper {
 
-
-    @Autowired
+    @Resource
     private ModelMapper modelMapper;
-    @Autowired
+    @Resource
     private ParameterMapper parameterMapper;
-    @Autowired
+    @Resource
     private SecurityMapper securityMapper;
-    @Autowired
+    @Resource
     private LicenseMapper licenseMapper;
-    @Autowired
+    @Resource
     private VendorExtensionsMapper vendorExtensionsMapper;
-
-    @Autowired
+    @Resource
     private MessageSource messageSource;
 
     @Override
     public Swagger mapDocumentation(Documentation from) {
-
         if (from == null) {
             return null;
         }
 
         Swagger swagger = new Swagger();
-
         swagger.setVendorExtensions(vendorExtensionsMapper.mapExtensions(from.getVendorExtensions()));
         swagger.setSchemes(mapSchemes(from.getSchemes()));
         swagger.setPaths(mapApiListings(from.getApiListings()));
         swagger.setHost(from.getHost());
-        swagger.setDefinitions(modelsFromApiListings( from.getApiListings() ) );
+        swagger.setDefinitions(modelsFromApiListings(from.getApiListings()));
         swagger.setSecurityDefinitions(securityMapper.toSecuritySchemeDefinitions(from.getResourceListing()));
         ApiInfo info = fromResourceListingInfo(from);
         if (info != null) {
@@ -66,30 +62,27 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
         swagger.setTags(tagSetToTagList(from.getTags()));
         List<String> list2 = from.getConsumes();
         if (list2 != null) {
-            swagger.setConsumes(new ArrayList<String>(list2));
+            swagger.setConsumes(new ArrayList<>(list2));
         } else {
             swagger.setConsumes(null);
         }
         List<String> list3 = from.getProduces();
         if (list3 != null) {
-            swagger.setProduces(new ArrayList<String>(list3));
+            swagger.setProduces(new ArrayList<>(list3));
         } else {
             swagger.setProduces(null);
         }
-
         return swagger;
     }
 
 
     @Override
     protected Info mapApiInfo(ApiInfo from) {
-
         if (from == null) {
             return null;
         }
 
         Info info = new Info();
-
         info.setLicense(licenseMapper.apiInfoToLicense(from));
         info.setVendorExtensions(vendorExtensionsMapper.mapExtensions(from.getVendorExtensions()));
         info.setTermsOfService(from.getTermsOfServiceUrl());
@@ -103,7 +96,6 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
 
     @Override
     protected Contact map(springfox.documentation.service.Contact from) {
-
         if (from == null) {
             return null;
         }
@@ -119,7 +111,6 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
 
     @Override
     protected Operation mapOperation(springfox.documentation.service.Operation from) {
-
         if (from == null) {
             return null;
         }
@@ -134,39 +125,33 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
         operation.setOperationId(from.getUniqueId());
         operation.setResponses(mapResponseMessages(from.getResponseMessages()));
         operation.setSchemes(stringSetToSchemeList(from.getProtocol()));
-        Set<String> tagsSet = new HashSet<>(1);
 
-        if(from.getTags() != null && from.getTags().size() > 0){
+        if (from.getTags() != null && !from.getTags().isEmpty()) {
+            List<String> list = new ArrayList<>(0);
 
-            List<String> list = new ArrayList<String>(tagsSet.size());
-
-            Iterator<String> it = from.getTags().iterator();
-            while(it.hasNext()){
-               String tag = it.next();
-               list.add(
-                   StringUtils.isNotBlank(tag) ? messageSource.getMessage(tag, null, tag, locale) : " ");
+            for (String tag : from.getTags()) {
+                list.add(
+                        StringUtils.isNotBlank(tag) ? messageSource.getMessage(tag, null, tag, locale) : " ");
             }
-
             operation.setTags(list);
-        }else {
+        } else {
             operation.setTags(null);
         }
 
         operation.setSummary(from.getSummary());
         Set<String> set1 = from.getConsumes();
         if (set1 != null) {
-            operation.setConsumes(new ArrayList<String>(set1));
+            operation.setConsumes(new ArrayList<>(set1));
         } else {
             operation.setConsumes(null);
         }
 
         Set<String> set2 = from.getProduces();
         if (set2 != null) {
-            operation.setProduces(new ArrayList<String>(set2));
+            operation.setProduces(new ArrayList<>(set2));
         } else {
             operation.setProduces(null);
         }
-
 
         operation.setParameters(parameterListToParameterList(from.getParameters()));
         if (from.getDeprecated() != null) {
@@ -178,7 +163,6 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
 
     @Override
     protected Tag mapTag(springfox.documentation.service.Tag from) {
-
         if (from == null) {
             return null;
         }
@@ -194,9 +178,7 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
         return tag;
     }
 
-
     private ApiInfo fromResourceListingInfo(Documentation documentation) {
-
         if (documentation == null) {
             return null;
         }
@@ -204,20 +186,15 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
         if (resourceListing == null) {
             return null;
         }
-        ApiInfo info = resourceListing.getInfo();
-        if (info == null) {
-            return null;
-        }
-        return info;
+        return resourceListing.getInfo();
     }
 
     protected List<Tag> tagSetToTagList(Set<springfox.documentation.service.Tag> set) {
-
         if (set == null) {
             return null;
         }
 
-        List<Tag> list = new ArrayList<Tag>(set.size());
+        List<Tag> list = new ArrayList<>(set.size());
         for (springfox.documentation.service.Tag tag : set) {
             list.add(mapTag(tag));
         }
@@ -230,7 +207,7 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
             return null;
         }
 
-        List<Scheme> list = new ArrayList<Scheme>(set.size());
+        List<Scheme> list = new ArrayList<>(set.size());
         for (String string : set) {
             list.add(Enum.valueOf(Scheme.class, string));
         }
@@ -243,14 +220,13 @@ public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapp
             return null;
         }
 
-        List<Parameter> list1 = new ArrayList<Parameter>(list.size());
-
+        List<Parameter> list1 = new ArrayList<>(list.size());
         Locale locale = LocaleContextHolder.getLocale();
 
         for (springfox.documentation.service.Parameter param : list) {
             String description = messageSource.getMessage(param.getDescription(), null, param.getDescription(), locale);
 
-            springfox.documentation.service.Parameter parameter = new springfox.documentation.service.Parameter(param.getName(),description,param.getDefaultValue(),param.isRequired(),param.isAllowMultiple(),param.isAllowEmptyValue(),param.getModelRef(),param.getType(),param.getAllowableValues(),param.getParamType(),param.getParamAccess(),param.isHidden(),param.getPattern(),param.getCollectionFormat(),param.getOrder(),param.getScalarExample(),param.getExamples() ,param.getVendorExtentions());
+            springfox.documentation.service.Parameter parameter = new springfox.documentation.service.Parameter(param.getName(), description, param.getDefaultValue(), param.isRequired(), param.isAllowMultiple(), param.isAllowEmptyValue(), param.getModelRef(), param.getType(), param.getAllowableValues(), param.getParamType(), param.getParamAccess(), param.isHidden(), param.getPattern(), param.getCollectionFormat(), param.getOrder(), param.getScalarExample(), param.getExamples(), param.getVendorExtentions());
             list1.add(parameterMapper.mapParameter(parameter));
         }
 

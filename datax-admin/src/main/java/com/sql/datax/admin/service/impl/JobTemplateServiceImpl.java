@@ -24,8 +24,6 @@ import java.util.Map;
 
 /**
  * core job action for xxl-job
- *
- * @author xuxueli 2016-5-28 15:30:33
  */
 @Service
 public class JobTemplateServiceImpl implements JobTemplateService {
@@ -42,7 +40,6 @@ public class JobTemplateServiceImpl implements JobTemplateService {
 
     @Override
     public Map<String, Object> pageList(int start, int length, int jobGroup, String jobDesc, String executorHandler, int userId, Integer[] projectIds) {
-
         // page list
         List<JobTemplate> list = jobTemplateMapper.pageList(start, length, jobGroup, jobDesc, executorHandler, userId, projectIds);
         int list_count = jobTemplateMapper.pageListCount(start, length, jobGroup, jobDesc, executorHandler, userId, projectIds);
@@ -60,28 +57,28 @@ public class JobTemplateServiceImpl implements JobTemplateService {
         // valid
         JobGroup group = jobGroupMapper.load(jobTemplate.getJobGroup());
         if (group == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_choose") + I18nUtil.getString("jobinfo_field_jobgroup")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_choose") + I18nUtil.getString("jobinfo_field_jobgroup")));
         }
         if (!CronExpression.isValidExpression(jobTemplate.getJobCron())) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid"));
+            return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid"));
         }
-        if (jobTemplate.getJobDesc() == null || jobTemplate.getJobDesc().trim().length() == 0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobdesc")));
+        if (jobTemplate.getJobDesc() == null || jobTemplate.getJobDesc().trim().isEmpty()) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobdesc")));
         }
         if (jobTemplate.getUserId() == 0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_author")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_author")));
         }
         if (ExecutorRouteStrategyEnum.match(jobTemplate.getExecutorRouteStrategy(), null) == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_executorRouteStrategy") + I18nUtil.getString("system_invalid")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_executorRouteStrategy") + I18nUtil.getString("system_invalid")));
         }
         if (ExecutorBlockStrategyEnum.match(jobTemplate.getExecutorBlockStrategy(), null) == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_executorBlockStrategy") + I18nUtil.getString("system_invalid")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_executorBlockStrategy") + I18nUtil.getString("system_invalid")));
         }
         if (GlueTypeEnum.match(jobTemplate.getGlueType()) == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_gluetype") + I18nUtil.getString("system_invalid")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_gluetype") + I18nUtil.getString("system_invalid")));
         }
-        if (GlueTypeEnum.BEAN == GlueTypeEnum.match(jobTemplate.getGlueType()) && (jobTemplate.getExecutorHandler() == null || jobTemplate.getExecutorHandler().trim().length() == 0)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + "JobHandler"));
+        if (GlueTypeEnum.BEAN == GlueTypeEnum.match(jobTemplate.getGlueType()) && (jobTemplate.getExecutorHandler() == null || jobTemplate.getExecutorHandler().trim().isEmpty())) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + "JobHandler"));
         }
 
         // fix "\r" in shell
@@ -90,32 +87,32 @@ public class JobTemplateServiceImpl implements JobTemplateService {
         }
 
         // ChildJobId valid
-        if (jobTemplate.getChildJobId() != null && jobTemplate.getChildJobId().trim().length() > 0) {
+        if (jobTemplate.getChildJobId() != null && !jobTemplate.getChildJobId().trim().isEmpty()) {
             String[] childJobIds = jobTemplate.getChildJobId().split(",");
             for (String childJobIdItem : childJobIds) {
                 if (StringUtils.isNotBlank(childJobIdItem) && isNumeric(childJobIdItem) && Integer.parseInt(childJobIdItem) > 0) {
                     JobInfo jobInfo = jobInfoMapper.loadById(Integer.parseInt(childJobIdItem));
                     if (jobInfo == null) {
-                        return new ReturnT<String>(ReturnT.FAIL_CODE,
+                        return new ReturnT<>(ReturnT.FAIL_CODE,
                                 MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId") + "({0})" + I18nUtil.getString("system_not_found")), childJobIdItem));
                     }
                 } else {
-                    return new ReturnT<String>(ReturnT.FAIL_CODE,
+                    return new ReturnT<>(ReturnT.FAIL_CODE,
                             MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId") + "({0})" + I18nUtil.getString("system_invalid")), childJobIdItem));
                 }
             }
             // join , avoid "xxx,,"
-            String temp = Constants.STRING_BLANK;
+            StringBuilder temp = new StringBuilder(Constants.STRING_BLANK);
             for (String item : childJobIds) {
-                temp += item + Constants.SPLIT_COMMA;
+                temp.append(item).append(Constants.SPLIT_COMMA);
             }
-            temp = temp.substring(0, temp.length() - 1);
+            temp = new StringBuilder(temp.substring(0, temp.length() - 1));
 
-            jobTemplate.setChildJobId(temp);
+            jobTemplate.setChildJobId(temp.toString());
         }
 
         if (jobTemplate.getProjectId() == 0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobproject")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobproject")));
         }
 
         // add in db
@@ -124,15 +121,15 @@ public class JobTemplateServiceImpl implements JobTemplateService {
         jobTemplate.setGlueUpdatetime(new Date());
         jobTemplateMapper.save(jobTemplate);
         if (jobTemplate.getId() < 1) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_add") + I18nUtil.getString("system_fail")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_add") + I18nUtil.getString("system_fail")));
         }
 
-        return new ReturnT<String>(String.valueOf(jobTemplate.getId()));
+        return new ReturnT<>(String.valueOf(jobTemplate.getId()));
     }
 
     private boolean isNumeric(String str) {
         try {
-            int result = Integer.valueOf(str);
+            Integer.parseInt(str);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -141,12 +138,11 @@ public class JobTemplateServiceImpl implements JobTemplateService {
 
     @Override
     public ReturnT<String> update(JobTemplate jobTemplate) {
-
         // valid
         if (!CronExpression.isValidExpression(jobTemplate.getJobCron())) {
             return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid"));
         }
-        if (jobTemplate.getJobDesc() == null || jobTemplate.getJobDesc().trim().length() == 0) {
+        if (jobTemplate.getJobDesc() == null || jobTemplate.getJobDesc().trim().isEmpty()) {
             return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobinfo_field_jobdesc")));
         }
         if (jobTemplate.getUserId() == 0) {
@@ -160,41 +156,41 @@ public class JobTemplateServiceImpl implements JobTemplateService {
         }
 
         // ChildJobId valid
-        if (jobTemplate.getChildJobId() != null && jobTemplate.getChildJobId().trim().length() > 0) {
+        if (jobTemplate.getChildJobId() != null && !jobTemplate.getChildJobId().trim().isEmpty()) {
             String[] childJobIds = jobTemplate.getChildJobId().split(",");
             for (String childJobIdItem : childJobIds) {
-                if (childJobIdItem != null && childJobIdItem.trim().length() > 0 && isNumeric(childJobIdItem)) {
+                if (childJobIdItem != null && !childJobIdItem.trim().isEmpty() && isNumeric(childJobIdItem)) {
                     JobTemplate childJobTemplate = jobTemplateMapper.loadById(Integer.parseInt(childJobIdItem));
                     if (childJobTemplate == null) {
-                        return new ReturnT<String>(ReturnT.FAIL_CODE,
+                        return new ReturnT<>(ReturnT.FAIL_CODE,
                                 MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId") + "({0})" + I18nUtil.getString("system_not_found")), childJobIdItem));
                     }
                 } else {
-                    return new ReturnT<String>(ReturnT.FAIL_CODE,
+                    return new ReturnT<>(ReturnT.FAIL_CODE,
                             MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId") + "({0})" + I18nUtil.getString("system_invalid")), childJobIdItem));
                 }
             }
 
             // join , avoid "xxx,,"
-            String temp = Constants.STRING_BLANK;
+            StringBuilder temp = new StringBuilder(Constants.STRING_BLANK);
             for (String item : childJobIds) {
-                temp += item + Constants.SPLIT_COMMA;
+                temp.append(item).append(Constants.SPLIT_COMMA);
             }
-            temp = temp.substring(0, temp.length() - 1);
+            temp = new StringBuilder(temp.substring(0, temp.length() - 1));
 
-            jobTemplate.setChildJobId(temp);
+            jobTemplate.setChildJobId(temp.toString());
         }
 
         // group valid
         JobGroup jobGroup = jobGroupMapper.load(jobTemplate.getJobGroup());
         if (jobGroup == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobgroup") + I18nUtil.getString("system_invalid")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobgroup") + I18nUtil.getString("system_invalid")));
         }
 
         // stage job info
         JobTemplate exists_jobTemplate = jobTemplateMapper.loadById(jobTemplate.getId());
         if (exists_jobTemplate == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_id") + I18nUtil.getString("system_not_found")));
+            return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_id") + I18nUtil.getString("system_not_found")));
         }
 
         // next trigger time (5s后生效，避开预读周期)

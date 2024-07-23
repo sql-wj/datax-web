@@ -16,9 +16,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-/**
- * Created by xuxueli on 17/5/10.
- */
 @RestController
 @RequestMapping("/api")
 public class JobApiController {
@@ -28,15 +25,12 @@ public class JobApiController {
 
     /**
      * callback
-     *
-     * @param data
-     * @return
      */
     @RequestMapping("/callback")
     public ReturnT<String> callback(HttpServletRequest request, @RequestBody(required = false) String data) {
         // valid
-        if (JobAdminConfig.getAdminConfig().getAccessToken()!=null
-                && JobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
+        if (JobAdminConfig.getAdminConfig().getAccessToken() != null
+                && !JobAdminConfig.getAdminConfig().getAccessToken().trim().isEmpty()
                 && !JobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(JobRemotingUtil.XXL_RPC_ACCESS_TOKEN))) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "The access token is wrong.");
         }
@@ -45,8 +39,9 @@ public class JobApiController {
         List<HandleCallbackParam> callbackParamList = null;
         try {
             callbackParamList = JacksonUtil.readValue(data, List.class, HandleCallbackParam.class);
-        } catch (Exception e) { }
-        if (callbackParamList==null || callbackParamList.size()==0) {
+        } catch (Exception ignored) {
+        }
+        if (callbackParamList == null || callbackParamList.isEmpty()) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "The request data invalid.");
         }
 
@@ -56,15 +51,12 @@ public class JobApiController {
 
     /**
      * callback
-     *
-     * @param data
-     * @return
      */
     @RequestMapping("/processCallback")
     public ReturnT<String> processCallback(HttpServletRequest request, @RequestBody(required = false) String data) {
         // valid
-        if (JobAdminConfig.getAdminConfig().getAccessToken()!=null
-                && JobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
+        if (JobAdminConfig.getAdminConfig().getAccessToken() != null
+                && !JobAdminConfig.getAdminConfig().getAccessToken().trim().isEmpty()
                 && !JobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(JobRemotingUtil.XXL_RPC_ACCESS_TOKEN))) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "The access token is wrong.");
         }
@@ -73,8 +65,9 @@ public class JobApiController {
         List<HandleProcessCallbackParam> callbackParamList = null;
         try {
             callbackParamList = JacksonUtil.readValue(data, List.class, HandleProcessCallbackParam.class);
-        } catch (Exception e) { }
-        if (callbackParamList==null || callbackParamList.size()==0) {
+        } catch (Exception ignored) {
+        }
+        if (callbackParamList == null || callbackParamList.isEmpty()) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "The request data invalid.");
         }
 
@@ -83,46 +76,14 @@ public class JobApiController {
     }
 
 
-
     /**
      * registry
-     *
-     * @param data
-     * @return
      */
     @RequestMapping("/registry")
     public ReturnT<String> registry(HttpServletRequest request, @RequestBody(required = false) String data) {
         // valid
-        if (JobAdminConfig.getAdminConfig().getAccessToken()!=null
-                && JobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
-                && !JobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(JobRemotingUtil.XXL_RPC_ACCESS_TOKEN))) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "The access token is wrong.");
-        }
-
-        // param
-        RegistryParam registryParam = null;
-        try {
-            registryParam = JacksonUtil.readValue(data, RegistryParam.class);
-        } catch (Exception e) {}
-        if (registryParam == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "The request data invalid.");
-        }
-
-        // invoke
-        return adminBiz.registry(registryParam);
-    }
-
-    /**
-     * registry remove
-     *
-     * @param data
-     * @return
-     */
-    @RequestMapping("/registryRemove")
-    public ReturnT<String> registryRemove(HttpServletRequest request, @RequestBody(required = false) String data) {
-        // valid
-        if (JobAdminConfig.getAdminConfig().getAccessToken()!=null
-                && JobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
+        if (JobAdminConfig.getAdminConfig().getAccessToken() != null
+                && !JobAdminConfig.getAdminConfig().getAccessToken().trim().isEmpty()
                 && !JobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(JobRemotingUtil.XXL_RPC_ACCESS_TOKEN))) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "The access token is wrong.");
         }
@@ -131,7 +92,34 @@ public class JobApiController {
         RegistryParam registryParam = null;
         try {
             registryParam = JacksonUtil.readValue(data, RegistryParam.class);
-        } catch (Exception e) {}
+        } catch (Exception ignored) {
+        }
+        if (registryParam == null) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "The request data invalid.");
+        }
+
+        // invoke
+        return adminBiz.registry(registryParam);
+    }
+
+    /**
+     * registry remove
+     */
+    @RequestMapping("/registryRemove")
+    public ReturnT<String> registryRemove(HttpServletRequest request, @RequestBody(required = false) String data) {
+        // valid
+        if (JobAdminConfig.getAdminConfig().getAccessToken() != null
+                && !JobAdminConfig.getAdminConfig().getAccessToken().trim().isEmpty()
+                && !JobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(JobRemotingUtil.XXL_RPC_ACCESS_TOKEN))) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, "The access token is wrong.");
+        }
+
+        // param
+        RegistryParam registryParam = null;
+        try {
+            registryParam = JacksonUtil.readValue(data, RegistryParam.class);
+        } catch (Exception ignored) {
+        }
         if (registryParam == null) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "The request data invalid.");
         }
@@ -139,6 +127,5 @@ public class JobApiController {
         // invoke
         return adminBiz.registryRemove(registryParam);
     }
-
 
 }

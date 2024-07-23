@@ -1,6 +1,5 @@
 package com.sql.datax.admin.tool.datax;
 
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -27,11 +26,6 @@ import static com.sql.datax.admin.util.JdbcConstants.*;
 
 /**
  * 构建 com.sql.datax json的工具类
- *
- * @author jingwk
- * @ClassName DataxJsonHelper
- * @Version 2.1.1
- * @since 2020/03/14 08:24
  */
 @Data
 public class DataxJsonHelper implements DataxJsonInterface {
@@ -174,9 +168,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
         }
 
         List<String> toColumns = new ArrayList<>();
-        columns.forEach(s -> {
-            toColumns.add(doConvertKeywordsColumn(datasource, s));
-        });
+        columns.forEach(s -> toColumns.add(doConvertKeywordsColumn(datasource, s)));
         return toColumns;
     }
 
@@ -277,15 +269,15 @@ public class DataxJsonHelper implements DataxJsonInterface {
         DataxHbasePojo dataxHbasePojo = new DataxHbasePojo();
         dataxHbasePojo.setJdbcDatasource(readerDatasource);
         List<Map<String, Object>> columns = Lists.newArrayList();
-        for (int i = 0; i < readerColumns.size(); i++) {
+        for (String readerColumn : readerColumns) {
             Map<String, Object> column = Maps.newLinkedHashMap();
-            column.put("name", readerColumns.get(i));
+            column.put("name", readerColumn);
             column.put("type", "string");
             columns.add(column);
         }
         dataxHbasePojo.setColumns(columns);
         dataxHbasePojo.setReaderHbaseConfig(readerDatasource.getZkAdress());
-        String readerTable=!CollectionUtils.isEmpty(readerTables)?readerTables.get(0):Constants.STRING_BLANK;
+        String readerTable = !CollectionUtils.isEmpty(readerTables) ? readerTables.get(0) : Constants.STRING_BLANK;
         dataxHbasePojo.setReaderTable(readerTable);
         dataxHbasePojo.setReaderMode(hbaseReaderDto.getReaderMode());
         dataxHbasePojo.setReaderRange(hbaseReaderDto.getReaderRange());
@@ -352,7 +344,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
         }
         dataxHbasePojo.setColumns(columns);
         dataxHbasePojo.setWriterHbaseConfig(writerDatasource.getZkAdress());
-        String writerTable=!CollectionUtils.isEmpty(writerTables)?writerTables.get(0):Constants.STRING_BLANK;
+        String writerTable = !CollectionUtils.isEmpty(writerTables) ? writerTables.get(0) : Constants.STRING_BLANK;
         dataxHbasePojo.setWriterTable(writerTable);
         dataxHbasePojo.setWriterVersionColumn(hbaseWriterDto.getWriterVersionColumn());
         dataxHbasePojo.setWriterRowkeyColumn(hbaseWriterDto.getWriterRowkeyColumn());

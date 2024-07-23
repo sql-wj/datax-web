@@ -9,26 +9,22 @@ import com.sql.datax.admin.core.util.I18nUtil;
 
 import java.util.List;
 
-/**
- * Created by xuxueli on 17/3/10.
- */
 public class ExecutorRouteBusyover extends ExecutorRouter {
 
     @Override
     public ReturnT<String> route(TriggerParam triggerParam, List<String> addressList) {
-        StringBuffer idleBeatResultSB = new StringBuffer();
+        StringBuilder idleBeatResultSB = new StringBuilder();
         for (String address : addressList) {
             // beat
-            ReturnT<String> idleBeatResult = null;
+            ReturnT<String> idleBeatResult;
             try {
                 ExecutorBiz executorBiz = JobScheduler.getExecutorBiz(address);
                 idleBeatResult = executorBiz.idleBeat(triggerParam.getJobId());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                idleBeatResult = new ReturnT<String>(ReturnT.FAIL_CODE, ""+e );
+                idleBeatResult = new ReturnT<>(ReturnT.FAIL_CODE, ""+e );
             }
-            idleBeatResultSB.append( (idleBeatResultSB.length()>0)?"<br><br>":"")
-                    .append(I18nUtil.getString("jobconf_idleBeat") + "：")
+            idleBeatResultSB.append((idleBeatResultSB.length() > 0) ? "<br><br>" : "").append(I18nUtil.getString("jobconf_idleBeat")).append("：")
                     .append("<br>address：").append(address)
                     .append("<br>code：").append(idleBeatResult.getCode())
                     .append("<br>msg：").append(idleBeatResult.getMsg());
@@ -40,8 +36,7 @@ public class ExecutorRouteBusyover extends ExecutorRouter {
                 return idleBeatResult;
             }
         }
-
-        return new ReturnT<String>(ReturnT.FAIL_CODE, idleBeatResultSB.toString());
+        return new ReturnT<>(ReturnT.FAIL_CODE, idleBeatResultSB.toString());
     }
 
 }

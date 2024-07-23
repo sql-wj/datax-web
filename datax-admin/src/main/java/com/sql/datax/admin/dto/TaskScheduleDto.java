@@ -2,7 +2,6 @@ package com.sql.datax.admin.dto;
 
 public class TaskScheduleDto {
 
-
     /**
      * 所选作业类型:
      * 1  -> 每天

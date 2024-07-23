@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.*;
 
-/**
- * Created by jingwk on 2019/11/17
- */
 @RestController
 @RequestMapping("/api/jobGroup")
 @Api(tags = "执行器管理接口")
@@ -40,25 +37,24 @@ public class JobGroupController {
     @PostMapping("/save")
     @ApiOperation("新建执行器")
     public ReturnT<String> save(@RequestBody JobGroup jobGroup) {
-
         // valid
-        if (jobGroup.getAppName() == null || jobGroup.getAppName().trim().length() == 0) {
-            return new ReturnT<String>(500, (I18nUtil.getString("system_please_input") + "AppName"));
+        if (jobGroup.getAppName() == null || jobGroup.getAppName().trim().isEmpty()) {
+            return new ReturnT<>(500, (I18nUtil.getString("system_please_input") + "AppName"));
         }
         if (jobGroup.getAppName().length() < 4 || jobGroup.getAppName().length() > 64) {
-            return new ReturnT<String>(500, I18nUtil.getString("jobgroup_field_appName_length"));
+            return new ReturnT<>(500, I18nUtil.getString("jobgroup_field_appName_length"));
         }
-        if (jobGroup.getTitle() == null || jobGroup.getTitle().trim().length() == 0) {
-            return new ReturnT<String>(500, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobgroup_field_title")));
+        if (jobGroup.getTitle() == null || jobGroup.getTitle().trim().isEmpty()) {
+            return new ReturnT<>(500, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobgroup_field_title")));
         }
         if (jobGroup.getAddressType() != 0) {
-            if (jobGroup.getAddressList() == null || jobGroup.getAddressList().trim().length() == 0) {
-                return new ReturnT<String>(500, I18nUtil.getString("jobgroup_field_addressType_limit"));
+            if (jobGroup.getAddressList() == null || jobGroup.getAddressList().trim().isEmpty()) {
+                return new ReturnT<>(500, I18nUtil.getString("jobgroup_field_addressType_limit"));
             }
             String[] addresses = jobGroup.getAddressList().split(",");
             for (String item : addresses) {
-                if (item == null || item.trim().length() == 0) {
-                    return new ReturnT<String>(500, I18nUtil.getString("jobgroup_field_registryList_invalid"));
+                if (item == null || item.trim().isEmpty()) {
+                    return new ReturnT<>(500, I18nUtil.getString("jobgroup_field_registryList_invalid"));
                 }
             }
         }
@@ -71,37 +67,38 @@ public class JobGroupController {
     @ApiOperation("更新执行器")
     public ReturnT<String> update(@RequestBody JobGroup jobGroup) {
         // valid
-        if (jobGroup.getAppName() == null || jobGroup.getAppName().trim().length() == 0) {
-            return new ReturnT<String>(500, (I18nUtil.getString("system_please_input") + "AppName"));
+        if (jobGroup.getAppName() == null || jobGroup.getAppName().trim().isEmpty()) {
+            return new ReturnT<>(500, (I18nUtil.getString("system_please_input") + "AppName"));
         }
         if (jobGroup.getAppName().length() < 4 || jobGroup.getAppName().length() > 64) {
-            return new ReturnT<String>(500, I18nUtil.getString("jobgroup_field_appName_length"));
+            return new ReturnT<>(500, I18nUtil.getString("jobgroup_field_appName_length"));
         }
-        if (jobGroup.getTitle() == null || jobGroup.getTitle().trim().length() == 0) {
-            return new ReturnT<String>(500, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobgroup_field_title")));
+        if (jobGroup.getTitle() == null || jobGroup.getTitle().trim().isEmpty()) {
+            return new ReturnT<>(500, (I18nUtil.getString("system_please_input") + I18nUtil.getString("jobgroup_field_title")));
         }
         if (jobGroup.getAddressType() == 0) {
             // 0=自动注册
             List<String> registryList = findRegistryByAppName(jobGroup.getAppName());
-            String addressListStr = null;
+            StringBuilder addressListStr = null;
             if (registryList != null && !registryList.isEmpty()) {
                 Collections.sort(registryList);
-                addressListStr = "";
+                addressListStr = new StringBuilder();
                 for (String item : registryList) {
-                    addressListStr += item + ",";
+                    addressListStr.append(item).append(",");
                 }
-                addressListStr = addressListStr.substring(0, addressListStr.length() - 1);
+                addressListStr = new StringBuilder(addressListStr.substring(0, addressListStr.length() - 1));
             }
-            jobGroup.setAddressList(addressListStr);
+            assert addressListStr != null;
+            jobGroup.setAddressList(addressListStr.toString());
         } else {
             // 1=手动录入
-            if (jobGroup.getAddressList() == null || jobGroup.getAddressList().trim().length() == 0) {
-                return new ReturnT<String>(500, I18nUtil.getString("jobgroup_field_addressType_limit"));
+            if (jobGroup.getAddressList() == null || jobGroup.getAddressList().trim().isEmpty()) {
+                return new ReturnT<>(500, I18nUtil.getString("jobgroup_field_addressType_limit"));
             }
             String[] addresses = jobGroup.getAddressList().split(",");
             for (String item : addresses) {
-                if (item == null || item.trim().length() == 0) {
-                    return new ReturnT<String>(500, I18nUtil.getString("jobgroup_field_registryList_invalid"));
+                if (item == null || item.trim().isEmpty()) {
+                    return new ReturnT<>(500, I18nUtil.getString("jobgroup_field_registryList_invalid"));
                 }
             }
         }
@@ -135,7 +132,6 @@ public class JobGroupController {
     @PostMapping("/remove")
     @ApiOperation("移除执行器")
     public ReturnT<String> remove(int id) {
-
         // valid
         int count = jobInfoMapper.pageListCount(0, 10, id, -1, null, null, 0,null);
         if (count > 0) {

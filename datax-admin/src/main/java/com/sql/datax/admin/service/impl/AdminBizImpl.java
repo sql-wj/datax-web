@@ -26,12 +26,9 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author xuxueli 2017-07-27 21:54:20
- */
 @Service
 public class AdminBizImpl implements AdminBiz {
-    private static Logger logger = LoggerFactory.getLogger(AdminBizImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminBizImpl.class);
 
     @Resource
     public JobLogMapper jobLogMapper;
@@ -71,14 +68,14 @@ public class AdminBizImpl implements AdminBiz {
         // valid log item
         JobLog log = jobLogMapper.load(handleCallbackParam.getLogId());
         if (log == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "log item not found.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "log item not found.");
         }
         if (log.getHandleCode() > 0) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "log repeate callback.");     // avoid repeat callback, trigger child job etc
+            return new ReturnT<>(ReturnT.FAIL_CODE, "log repeate callback.");     // avoid repeat callback, trigger child job etc
         }
 
         // trigger success, to trigger child job
-        String callbackMsg = null;
+        StringBuilder callbackMsg = null;
         int resultCode = handleCallbackParam.getExecuteResult().getCode();
 
         if (IJobHandler.SUCCESS.getCode() == resultCode) {
@@ -87,32 +84,31 @@ public class AdminBizImpl implements AdminBiz {
 
             updateIncrementParam(log, jobInfo.getIncrementType());
 
-            if (jobInfo != null && jobInfo.getChildJobId() != null && jobInfo.getChildJobId().trim().length() > 0) {
-                callbackMsg = "<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>>" + I18nUtil.getString("jobconf_trigger_child_run") + "<<<<<<<<<<< </span><br>";
+            if (jobInfo.getChildJobId() != null && !jobInfo.getChildJobId().trim().isEmpty()) {
+                callbackMsg = new StringBuilder("<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>>" + I18nUtil.getString("jobconf_trigger_child_run") + "<<<<<<<<<<< </span><br>");
 
                 String[] childJobIds = jobInfo.getChildJobId().split(",");
                 for (int i = 0; i < childJobIds.length; i++) {
-                    int childJobId = (childJobIds[i] != null && childJobIds[i].trim().length() > 0 && isNumeric(childJobIds[i])) ? Integer.valueOf(childJobIds[i]) : -1;
+                    int childJobId = (childJobIds[i] != null && !childJobIds[i].trim().isEmpty() && isNumeric(childJobIds[i])) ? Integer.parseInt(childJobIds[i]) : -1;
                     if (childJobId > 0) {
 
                         JobTriggerPoolHelper.trigger(childJobId, TriggerTypeEnum.PARENT, -1, null, null);
                         ReturnT<String> triggerChildResult = ReturnT.SUCCESS;
 
                         // add msg
-                        callbackMsg += MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg1"),
+                        callbackMsg.append(MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg1"),
                                 (i + 1),
                                 childJobIds.length,
                                 childJobIds[i],
                                 (triggerChildResult.getCode() == ReturnT.SUCCESS_CODE ? I18nUtil.getString("system_success") : I18nUtil.getString("system_fail")),
-                                triggerChildResult.getMsg());
+                                triggerChildResult.getMsg()));
                     } else {
-                        callbackMsg += MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg2"),
+                        callbackMsg.append(MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg2"),
                                 (i + 1),
                                 childJobIds.length,
-                                childJobIds[i]);
+                                childJobIds[i]));
                     }
                 }
-
             }
         }
 
@@ -122,7 +118,7 @@ public class AdminBizImpl implements AdminBiz {
         }
 
         // handle msg
-        StringBuffer handleMsg = new StringBuffer();
+        StringBuilder handleMsg = new StringBuilder();
         if (log.getHandleMsg() != null) {
             handleMsg.append(log.getHandleMsg()).append("<br>");
         }
@@ -134,7 +130,7 @@ public class AdminBizImpl implements AdminBiz {
         }
 
         if (handleMsg.length() > 15000) {
-            handleMsg = new StringBuffer(handleMsg.substring(0, 15000));  // text最大64kb 避免长度过长
+            handleMsg = new StringBuilder(handleMsg.substring(0, 15000));  // text最大64kb 避免长度过长
         }
 
         // success, save log
@@ -150,7 +146,7 @@ public class AdminBizImpl implements AdminBiz {
 
     private void updateIncrementParam(JobLog log, Integer incrementType) {
         if (IncrementTypeEnum.ID.getCode() == incrementType) {
-            jobInfoMapper.incrementIdUpdate(log.getJobId(),log.getMaxId());
+            jobInfoMapper.incrementIdUpdate(log.getJobId(), log.getMaxId());
         } else if (IncrementTypeEnum.TIME.getCode() == incrementType) {
             jobInfoMapper.incrementTimeUpdate(log.getJobId(), log.getTriggerTime());
         }
@@ -172,7 +168,7 @@ public class AdminBizImpl implements AdminBiz {
         if (!StringUtils.hasText(registryParam.getRegistryGroup())
                 || !StringUtils.hasText(registryParam.getRegistryKey())
                 || !StringUtils.hasText(registryParam.getRegistryValue())) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Illegal Argument.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Illegal Argument.");
         }
 
         int ret = jobRegistryMapper.registryUpdate(registryParam.getRegistryGroup(), registryParam.getRegistryKey(),
@@ -189,17 +185,15 @@ public class AdminBizImpl implements AdminBiz {
 
     @Override
     public ReturnT<String> registryRemove(RegistryParam registryParam) {
-
         // valid
         if (!StringUtils.hasText(registryParam.getRegistryGroup())
                 || !StringUtils.hasText(registryParam.getRegistryKey())
                 || !StringUtils.hasText(registryParam.getRegistryValue())) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Illegal Argument.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Illegal Argument.");
         }
 
         int ret = jobRegistryMapper.registryDelete(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue());
         if (ret > 0) {
-
             // fresh
             freshGroupRegistryInfo(registryParam);
         }

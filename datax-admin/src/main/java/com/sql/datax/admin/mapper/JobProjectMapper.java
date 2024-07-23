@@ -9,10 +9,6 @@ import org.apache.ibatis.annotations.Param;
 
 /**
  * Project
- *
- * @author jingwk
- * @version v2.1.12
- * @since 2020-05-24
  */
 @Mapper
 public interface JobProjectMapper extends BaseMapper<JobProject> {

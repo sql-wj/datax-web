@@ -7,11 +7,6 @@ import java.util.List;
 
 /**
  * 构建json dto
- *
- * @author jingwk
- * @ClassName DataxJsonDto
- * @Version 2.1.1
- * @since 2020/03/14 07:15
  */
 @Data
 public class DataXJsonBuildDto implements Serializable {

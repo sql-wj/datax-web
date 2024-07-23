@@ -11,10 +11,8 @@ import java.sql.SQLException;
 public class ClickHouseQueryTool extends BaseQueryTool implements QueryToolInterface {
     /**
      * 构造方法
-     *
-     * @param jobJdbcDatasource
      */
-  public ClickHouseQueryTool(JobDatasource jobJdbcDatasource) throws SQLException {
+    public ClickHouseQueryTool(JobDatasource jobJdbcDatasource) throws SQLException {
         super(jobJdbcDatasource);
     }
 }

@@ -8,8 +8,6 @@ import java.util.Date;
 
 /**
  * datax-web log, used to track trigger process
- *
- * @author jingwk  2019-11-17 22:08:11
  */
 @Data
 public class JobLog {

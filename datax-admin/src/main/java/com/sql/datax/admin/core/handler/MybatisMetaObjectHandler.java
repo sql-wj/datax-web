@@ -3,7 +3,6 @@ package com.sql.datax.admin.core.handler;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +10,6 @@ import java.util.Date;
 
 /**
  * 通用的字段填充，如createBy createDate这些字段的自动填充
- *
- * @author huzekang
  */
 @Component
 @Slf4j

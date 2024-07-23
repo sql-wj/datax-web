@@ -1,6 +1,5 @@
 package com.sql.datax.admin.util;
 
-
 import org.apache.xerces.impl.dv.util.HexBin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,29 +30,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-
 /**
  * jdbc utils
- *
- * @author jingwk
- * @ClassName JdbcUtils
- * @Version 2.1.1
- * @since 2020/03/14 07:15
  */
-public final class JdbcUtils implements  JdbcConstants {
+public final class JdbcUtils implements JdbcConstants {
 
-    private static Logger LOG = LoggerFactory.getLogger(JdbcUtils.class);
-
-
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcUtils.class);
     private static final Properties DRIVER_URL_MAPPING = new Properties();
-
-    private static Boolean mysql_driver_version_6      = null;
 
     static {
         try {
             ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
             if (ctxClassLoader != null) {
-                for (Enumeration<URL> e = ctxClassLoader.getResources("META-INF/druid-driver.properties"); e.hasMoreElements();) {
+                for (Enumeration<URL> e = ctxClassLoader.getResources("META-INF/druid-driver.properties"); e.hasMoreElements(); ) {
                     URL url = e.nextElement();
 
                     Properties property = new Properties();
@@ -188,56 +177,56 @@ public final class JdbcUtils implements  JdbcConstants {
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(Boolean.toString(value));
+                        out.print(value);
                     }
                 } else if (type == Types.BOOLEAN) {
                     boolean value = rs.getBoolean(columnIndex);
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(Boolean.toString(value));
+                        out.print(value);
                     }
                 } else if (type == Types.TINYINT) {
                     byte value = rs.getByte(columnIndex);
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(Byte.toString(value));
+                        out.print(value);
                     }
                 } else if (type == Types.SMALLINT) {
                     short value = rs.getShort(columnIndex);
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(Short.toString(value));
+                        out.print(value);
                     }
                 } else if (type == Types.INTEGER) {
                     int value = rs.getInt(columnIndex);
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(Integer.toString(value));
+                        out.print(value);
                     }
                 } else if (type == Types.BIGINT) {
                     long value = rs.getLong(columnIndex);
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(Long.toString(value));
+                        out.print(value);
                     }
                 } else if (type == Types.TIMESTAMP) {
-                    out.print(String.valueOf(rs.getTimestamp(columnIndex)));
+                    out.print(rs.getTimestamp(columnIndex));
                 } else if (type == Types.DECIMAL) {
-                    out.print(String.valueOf(rs.getBigDecimal(columnIndex)));
+                    out.print(rs.getBigDecimal(columnIndex));
                 } else if (type == Types.CLOB) {
-                    out.print(String.valueOf(rs.getString(columnIndex)));
+                    out.print(rs.getString(columnIndex));
                 } else if (type == Types.JAVA_OBJECT) {
                     Object object = rs.getObject(columnIndex);
 
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(String.valueOf(object));
+                        out.print(object);
                     }
                 } else if (type == Types.LONGVARCHAR) {
                     Object object = rs.getString(columnIndex);
@@ -245,7 +234,7 @@ public final class JdbcUtils implements  JdbcConstants {
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(String.valueOf(object));
+                        out.print(object);
                     }
                 } else if (type == Types.NULL) {
                     out.print("null");
@@ -260,7 +249,7 @@ public final class JdbcUtils implements  JdbcConstants {
                             String text = HexBin.encode(bytes);
                             out.print(text);
                         } else {
-                            out.print(String.valueOf(object));
+                            out.print(object);
                         }
                     }
                 }
@@ -467,7 +456,7 @@ public final class JdbcUtils implements  JdbcConstants {
             return ELASTIC_SEARCH;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
             return CLICKHOUSE;
-        }else if (rawUrl.startsWith("jdbc:presto:")) {
+        } else if (rawUrl.startsWith("jdbc:presto:")) {
             return PRESTO;
         } else {
             return null;
@@ -509,9 +498,7 @@ public final class JdbcUtils implements  JdbcConstants {
 
         try {
             return (Driver) clazz.newInstance();
-        } catch (IllegalAccessException e) {
-            throw new SQLException(e.getMessage(), e);
-        } catch (InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             throw new SQLException(e.getMessage(), e);
         }
     }
@@ -597,7 +584,7 @@ public final class JdbcUtils implements  JdbcConstants {
 
     public static List<Map<String, Object>> executeQuery(Connection conn, String sql, List<Object> parameters)
             throws SQLException {
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
 
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -611,7 +598,7 @@ public final class JdbcUtils implements  JdbcConstants {
             ResultSetMetaData rsMeta = rs.getMetaData();
 
             while (rs.next()) {
-                Map<String, Object> row = new LinkedHashMap<String, Object>();
+                Map<String, Object> row = new LinkedHashMap<>();
 
                 for (int i = 0, size = rsMeta.getColumnCount(); i < size; ++i) {
                     String columName = rsMeta.getColumnLabel(i + 1);
@@ -649,7 +636,7 @@ public final class JdbcUtils implements  JdbcConstants {
 
     public static void insertToTable(Connection conn, String tableName, Map<String, Object> data) throws SQLException {
         String sql = makeInsertToTableSql(tableName, data.keySet());
-        List<Object> parameters = new ArrayList<Object>(data.values());
+        List<Object> parameters = new ArrayList<>(data.values());
         execute(conn, sql, parameters);
     }
 
