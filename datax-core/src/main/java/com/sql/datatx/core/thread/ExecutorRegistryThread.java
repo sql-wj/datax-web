@@ -52,7 +52,6 @@ public class ExecutorRegistryThread {
                         } catch (Exception e) {
                             logger.info(">>>>>>>>>>> datax-web registry error, registryParam:{}", registryParam, e);
                         }
-
                     }
                 } catch (Exception e) {
                     if (!toStop) {

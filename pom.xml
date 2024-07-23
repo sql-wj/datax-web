@@ -30,8 +30,8 @@
         <slf4j-api.version>2.0.13</slf4j-api.version>
         <logback-classic.version>1.2.13</logback-classic.version>
         <hutool.version>5.8.29</hutool.version>
-        <jna.version>5.14.0</jna.version>
-        <oshi.core.version>6.6.2</oshi.core.version>
+        <jna.version>4.5.2</jna.version>
+        <oshi.core.version>3.9.1</oshi.core.version>
         <groovy.version>3.0.22</groovy.version>
         <jjwt.version>0.9.1</jjwt.version>
         <netty.version>4.1.111.Final</netty.version>
@@ -142,4 +142,5 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
 </project>

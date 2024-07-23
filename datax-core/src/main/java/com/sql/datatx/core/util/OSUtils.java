@@ -14,7 +14,6 @@ import java.text.DecimalFormat;
  * os utils
  */
 public class OSUtils {
-
     private static final Logger logger = LoggerFactory.getLogger(OSUtils.class);
 
     private static final SystemInfo SI = new SystemInfo();
@@ -40,7 +39,6 @@ public class OSUtils {
         return Double.parseDouble(df.format(memoryUsage * 100));
     }
 
-
     /**
      * get available physical memory size
      * <p>
@@ -50,12 +48,11 @@ public class OSUtils {
      */
     public static double availablePhysicalMemorySize() {
         GlobalMemory memory = hal.getMemory();
-        double availablePhysicalMemorySize = (memory.getAvailable() + memory.getVirtualMemory().getSwapUsed()) / 1024.0 / 1024 / 1024;
+        double availablePhysicalMemorySize = (memory.getAvailable() + memory.getSwapUsed()) / 1024.0 / 1024 / 1024;
 
         DecimalFormat df = new DecimalFormat(TWO_DECIMAL);
         df.setRoundingMode(RoundingMode.HALF_UP);
         return Double.parseDouble(df.format(availablePhysicalMemorySize));
-
     }
 
     /**
@@ -96,12 +93,12 @@ public class OSUtils {
      */
     public static double cpuUsage() {
         CentralProcessor processor = hal.getProcessor();
-        double cpuUsage = processor.getSystemCpuLoad(0);
+        double cpuUsage = processor.getSystemCpuLoadBetweenTicks();
 
         DecimalFormat df = new DecimalFormat(TWO_DECIMAL);
         df.setRoundingMode(RoundingMode.HALF_UP);
 
-        return Double.parseDouble(df.format(cpuUsage*100));
+        return Double.parseDouble(df.format(cpuUsage * 100));
     }
 
 
